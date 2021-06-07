@@ -617,7 +617,7 @@ namespace Funciones
         /// <summary>
         /// Método para importar los datos de un archivo archivos CSV
         /// </summary>
-        public void ImportCSV(SAPbouiCOM.Application _sboapp, SAPbobsCOM.Company _oCompany, string NombreArchivoCSV, string DllName, string _IDNodoTabla, string IDNodoInsert)
+        public void ImportCSV(SAPbouiCOM.Application _sboapp, SAPbobsCOM.Company _oCompany, string NombreArchivoCSV, string DllName, string _IDNodoTabla, string IDNodoInsert, string FileNameXML)
         {
             Funciones.Comunes DllFunciones = new Funciones.Comunes();
             try
@@ -642,7 +642,7 @@ namespace Funciones
 
                 #region Validacion si existen datos en la tabla
 
-                sVAlidacion = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", _IDNodoTabla);
+                sVAlidacion = DllFunciones.GetStringXMLDocument(_oCompany, DllName, FileNameXML, _IDNodoTabla);
 
                 oValidacion.DoQuery(sVAlidacion);
 
@@ -660,7 +660,7 @@ namespace Funciones
                 }
                 else
                 {
-                    sCantidadColumnas = 2;
+                    sCantidadColumnas = 3;
                 }
 
                 #endregion
@@ -675,7 +675,7 @@ namespace Funciones
 
                     var ArchivoCSV = new System.IO.StreamReader(sPath, System.Text.Encoding.Default);
 
-                    sInsertarOriginal = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", IDNodoInsert);
+                    sInsertarOriginal = DllFunciones.GetStringXMLDocument(_oCompany, DllName, FileNameXML, IDNodoInsert);
 
                     do
                     {
@@ -716,6 +716,18 @@ namespace Funciones
                                     sInsertarProcesado = sInsertarOriginal;
 
                                     sInsertarProcesado = sInsertarProcesado.Replace("%sCode%", sCode).Replace("%sName%", sName);
+
+                                    oInsertar.DoQuery(sInsertarProcesado);
+                                }
+                                else if (sArreglo.Length == 3)
+                                {
+                                    sCode = Convert.ToString(sArreglo.GetValue(0));
+                                    sName = Convert.ToString(sArreglo.GetValue(1));
+                                    sDescripcion = Convert.ToString(sArreglo.GetValue(2));
+
+                                    sInsertarProcesado = sInsertarOriginal;
+
+                                    sInsertarProcesado = sInsertarProcesado.Replace("%sCode%", sCode).Replace("%sName%", sName).Replace("%sDescripcion%", sDescripcion);
 
                                     oInsertar.DoQuery(sInsertarProcesado);
                                 }

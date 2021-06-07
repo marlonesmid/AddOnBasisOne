@@ -2447,64 +2447,71 @@ namespace BasisOne
         {
             BubbleEvent = true;
 
-            if (TieneLicenciaeBilling == true)
+            try
             {
-
-                #region Factura de venta
-
-                if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "133")
+                if (TieneLicenciaeBilling == true)
                 {
-                    SAPbouiCOM.Form frm = sboapp.Forms.Item(ByRef.FormUID);
 
-                    DlleBilling.ItemsLabelStatusDIAN(frm, "DataEvent");
+                    #region Factura de venta
+
+                    if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "133")
+                    {
+                        SAPbouiCOM.Form frm = sboapp.Forms.Item(ByRef.FormUID);
+
+                        DlleBilling.ItemsLabelStatusDIAN(frm, "DataEvent");
+                    }
+                    else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "133")
+                    {
+                        SAPbouiCOM.Form frm = null;
+
+                        DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, frm, ByRef, "FacturaDeClientes", "A", "DataEvent");
+
+                    }
+
+                    #endregion
+
+                    #region Factura + Pago 
+
+                    else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "60090")
+                    {
+                        SAPbouiCOM.Form frm = sboapp.Forms.Item(ByRef.FormUID);
+
+                        DlleBilling.ItemsLabelStatusDIAN(frm, "DataEvent");
+                    }
+
+                    else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "60090")
+                    {
+                        SAPbouiCOM.Form frm = null;
+
+                        DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, frm, ByRef, "FacturaDeClientes", "A", "DataEvent");
+
+                    }
+
+                    #endregion
+
+                    #region Factura de reserva
+
+                    else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "60091")
+                    {
+                        SAPbouiCOM.Form frm = sboapp.Forms.Item(ByRef.FormUID);
+
+                        DlleBilling.ItemsLabelStatusDIAN(frm, "DataEvent");
+                    }
+
+                    else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "60091")
+                    {
+                        SAPbouiCOM.Form frm = null;
+
+                        DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, frm, ByRef, "FacturaDeClientes", "A", "DataEvent");
+
+                    }
+
+                    #endregion
+
                 }
-                else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "133")
-                {
-                    SAPbouiCOM.Form frm = null;
-
-                    DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, frm, ByRef, "FacturaDeClientes", "A", "DataEvent");
-
-                }
-
-                #endregion
-
-                #region Factura + Pago 
-
-                else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "60090")
-                {
-                    SAPbouiCOM.Form frm = sboapp.Forms.Item(ByRef.FormUID);
-
-                    DlleBilling.ItemsLabelStatusDIAN(frm, "DataEvent");
-                }
-
-                else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "60090")
-                {
-                    SAPbouiCOM.Form frm = null;
-
-                    DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, frm, ByRef, "FacturaDeClientes", "A", "DataEvent");
-
-                }
-
-                #endregion
-
-                #region Factura de reserva
-
-                else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "60091")
-                {
-                    SAPbouiCOM.Form frm = sboapp.Forms.Item(ByRef.FormUID);
-
-                    DlleBilling.ItemsLabelStatusDIAN(frm, "DataEvent");
-                }
-
-                else if (ByRef.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD && ByRef.ActionSuccess == true && ByRef.FormTypeEx == "60091")
-                {
-                    SAPbouiCOM.Form frm = null;
-
-                    DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, frm, ByRef, "FacturaDeClientes", "A", "DataEvent");
-
-                }
-
-                #endregion
+            }
+            catch (Exception)
+            {
 
             }
         }

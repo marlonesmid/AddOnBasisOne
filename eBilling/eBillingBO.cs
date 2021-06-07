@@ -5399,203 +5399,984 @@ namespace eBilling
         {
             Funciones.Comunes DllFunciones = new Funciones.Comunes();
 
-            if (TipodeEvento == "DataEvent")
+            try
             {
-                #region Envio del documento a la DIAN
-
-                #region Consulta URL
-
-                string sGetModo = null;
-                string sURLEmision = null;
-                string sURLAdjuntos = null;
-                string sModo = null;
-                string sTipoIntegracion = null;
-                string sProtocoloComunicacion = null;
-
-                SAPbobsCOM.Recordset oConsultarGetModo = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-                sGetModo = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetModoandURL");
-
-                sGetModo = sGetModo.Replace("%Estado%", "\"U_BO_Status\" = 'Y'").Replace("%DocEntry%", " ");
-
-                oConsultarGetModo.DoQuery(sGetModo);
-
-                sURLEmision = Convert.ToString(oConsultarGetModo.Fields.Item("URLTFHKA").Value.ToString()) + "/ws/v1.0/Service.svc?wsdl";
-                sURLAdjuntos = Convert.ToString(oConsultarGetModo.Fields.Item("URLTFHKA").Value.ToString()) + "/ws/adjuntos/Service.svc?wsdl";
-                sModo = Convert.ToString(oConsultarGetModo.Fields.Item("Modo").Value.ToString());
-                sTipoIntegracion = Convert.ToString(oConsultarGetModo.Fields.Item("ModoIntegracion").Value.ToString());
-                sProtocoloComunicacion = Convert.ToString(oConsultarGetModo.Fields.Item("ProtocoloComunicacion").Value.ToString());
-                
-                DllFunciones.liberarObjetos(oConsultarGetModo);
-
-                #endregion
-
-                #region Instanciacion parametros TFHKA
-
-                //Especifica el puerto (HTTP o HTTPS)
-                if (sProtocoloComunicacion == "HTTP")
+                if (TipodeEvento == "DataEvent")
                 {
-                    BasicHttpBinding port = new BasicHttpBinding();
-                }
-                else if (sProtocoloComunicacion == "HTTPS")
-                {
-                    BasicHttpsBinding port = new BasicHttpsBinding();
-                }
+                    #region Envio del documento a la DIAN
 
-                port.MaxBufferPoolSize = Int32.MaxValue;
-                port.MaxBufferSize = Int32.MaxValue;
-                port.MaxReceivedMessageSize = Int32.MaxValue;
-                port.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
-                port.SendTimeout = TimeSpan.FromMinutes(2);
-                port.ReceiveTimeout = TimeSpan.FromMinutes(2);
+                    #region Consulta URL
 
-                if (sProtocoloComunicacion == "HTTPS")
-                {
-                    port.Security.Mode = BasicHttpSecurityMode.Transport;
-                }
+                    string sGetModo = null;
+                    string sURLEmision = null;
+                    string sURLAdjuntos = null;
+                    string sModo = null;
+                    string sTipoIntegracion = null;
+                    string sProtocoloComunicacion = null;
 
-                //Especifica la dirección de conexion para Emision y Adjuntos 
-                EndpointAddress endPointEmision = new EndpointAddress(sURLEmision); //URL DEMO EMISION
-                EndpointAddress endPointAdjuntos = new EndpointAddress(sURLAdjuntos); //URL DEMO ADJUNTOS          
+                    SAPbobsCOM.Recordset oConsultarGetModo = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
-                #endregion
+                    sGetModo = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetModoandURL");
 
-                #region Variables
+                    sGetModo = sGetModo.Replace("%Estado%", "\"U_BO_Status\" = 'Y'").Replace("%DocEntry%", " ");
 
-                string sDocNumInvoice = null;
-                string sSerieNumeracion = null;
-                string sQueryDocEntryDocument = null;
-                string sDocEntryInvoice = null;
-                string sProcedureXML = null;
-                string sDocumentoCabecera = null;
-                string sDocumentoLinea = null;
-                string sDocumentoImpuestosGenerales = null;
-                string sDocumentoImpuestosTotales = null;
-                string sParametrosTFHKA = null;
-                string sRutaCR = null;
-                string sPrefijoConDoc = null;
-                string sPrefijo = null;
-                string sStatusDoc = null;
-                string sFormaEnvio = null;
-                string sLlave = null;
-                string sPassword = null;
-                string sUserDB = null;
-                string sPassDB = null;
-                string sRutaPDF = null;
-                string sRutaXML = null;
-                string sNombreDocumento = null;
-                string sNombreDocWarning = null;
-                string sCUFEInvoice = null;
-                int sReprocesar = 0;
-                string sGenerarXMLPrueba = null;
-                string sCountsEmails = null;
-                
-                Boolean GeneroPDF = false;
+                    oConsultarGetModo.DoQuery(sGetModo);
 
-                if (_TipoDocumento == "FacturaDeClientes")
-                {
-                    sNombreDocumento = "Factura_de_Venta_No_";
-                    sNombreDocWarning = "Factura de venta";
-                }
-                else if (_TipoDocumento == "NotaCreditoClientes")
-                {
-                    sNombreDocumento = "Nota_Credito_No_";
-                    sNombreDocWarning = "Nota credito de clientes";
-                }
-                else if (_TipoDocumento == "NotaDebitoClientes")
-                {
-                    sNombreDocumento = "Nota_debito_Clientes_No_";
-                    sNombreDocWarning = "Nota debito de clientes";
-                }
+                    sURLEmision = Convert.ToString(oConsultarGetModo.Fields.Item("URLTFHKA").Value.ToString()) + "/ws/v1.0/Service.svc?wsdl";
+                    sURLAdjuntos = Convert.ToString(oConsultarGetModo.Fields.Item("URLTFHKA").Value.ToString()) + "/ws/adjuntos/Service.svc?wsdl";
+                    sModo = Convert.ToString(oConsultarGetModo.Fields.Item("Modo").Value.ToString());
+                    sTipoIntegracion = Convert.ToString(oConsultarGetModo.Fields.Item("ModoIntegracion").Value.ToString());
+                    sProtocoloComunicacion = Convert.ToString(oConsultarGetModo.Fields.Item("ProtocoloComunicacion").Value.ToString());
 
-                #endregion
-                               
-                if (sTipoIntegracion == "On")
-                {
-                    #region Consulta de documento en la base de datos y el estado del documento
-
-                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 1: Consultando " + sNombreDocWarning + " ...");
-
-                    #region Obtiene el DocEntry
-
-                    XmlDocument XmlByRef = new XmlDocument();
-
-                    XmlByRef.LoadXml(ByRef.ObjectKey);
-
-                    sDocEntryInvoice = XmlByRef.SelectSingleNode("DocumentParams/DocEntry").InnerText;
+                    DllFunciones.liberarObjetos(oConsultarGetModo);
 
                     #endregion
 
-                    SAPbobsCOM.Recordset oGetDocNumAndSeries = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                    #region Instanciacion parametros TFHKA
 
-                    sQueryDocEntryDocument = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetDocNumAndSeries");
-
-                    if (_TipoDocumento == "FacturaDeClientes")
+                    //Especifica el puerto (HTTP o HTTPS)
+                    if (sProtocoloComunicacion == "HTTP")
                     {
-                        sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%Table%", "OINV").Replace("%NewObjectKey%", sDocEntryInvoice);
+                        BasicHttpBinding port = new BasicHttpBinding();
                     }
-                    else if (_TipoDocumento == "NotaCreditoClientes")
+                    else if (sProtocoloComunicacion == "HTTPS")
                     {
-                        sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%Table%", "ORIN").Replace("%NewObjectKey%", sDocEntryInvoice);
-                    }
-                    else if (_TipoDocumento == "NotaDebitoClientes")
-                    {
-                        sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%Table%", "OINV").Replace("%NewObjectKey%", sDocEntryInvoice);
+                        BasicHttpsBinding port = new BasicHttpsBinding();
                     }
 
-                    oGetDocNumAndSeries.DoQuery(sQueryDocEntryDocument);
+                    port.MaxBufferPoolSize = Int32.MaxValue;
+                    port.MaxBufferSize = Int32.MaxValue;
+                    port.MaxReceivedMessageSize = Int32.MaxValue;
+                    port.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
+                    port.SendTimeout = TimeSpan.FromMinutes(2);
+                    port.ReceiveTimeout = TimeSpan.FromMinutes(2);
 
-                    sDocNumInvoice = Convert.ToString(oGetDocNumAndSeries.Fields.Item("DocNum").Value.ToString());
-                    sSerieNumeracion = Convert.ToString(oGetDocNumAndSeries.Fields.Item("Series").Value.ToString());
-
-                    DllFunciones.liberarObjetos(oGetDocNumAndSeries);
-
-                    SAPbobsCOM.Recordset oConsultaDocEntry = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-                    sQueryDocEntryDocument = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetDocEntryAndParameters");
-
-                    if (_TipoDocumento == "FacturaDeClientes")
+                    if (sProtocoloComunicacion == "HTTPS")
                     {
-                        sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "OINV").Replace("%DocSubType%", "--");
-                    }
-                    else if (_TipoDocumento == "NotaCreditoClientes")
-                    {
-                        sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "ORIN").Replace("%DocSubType%", "--");
-                    }
-                    else if (_TipoDocumento == "NotaDebitoClientes")
-                    {
-                        sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "OINV").Replace("%DocSubType%", "DN");
+                        port.Security.Mode = BasicHttpSecurityMode.Transport;
                     }
 
-                    oConsultaDocEntry.DoQuery(sQueryDocEntryDocument);
-
-                    sPrefijo = Convert.ToString(oConsultaDocEntry.Fields.Item("PrefijoDes").Value.ToString());
-                    sStatusDoc = Convert.ToString(oConsultaDocEntry.Fields.Item("CRWS").Value.ToString());
-                    sFormaEnvio = Convert.ToString(oConsultaDocEntry.Fields.Item("FormaEnvio").Value.ToString());
-                    sLlave = Convert.ToString(oConsultaDocEntry.Fields.Item("Llave").Value.ToString());
-                    sPassword = Convert.ToString(oConsultaDocEntry.Fields.Item("Password").Value.ToString());
-                    sUserDB = Convert.ToString(oConsultaDocEntry.Fields.Item("UserDB").Value.ToString());
-                    sPassDB = Convert.ToString(oConsultaDocEntry.Fields.Item("PassDB").Value.ToString());
-                    sRutaXML = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaXML").Value.ToString()) + "\\" + sNombreDocumento + sPrefijo + '_' + sDocNumInvoice + ".txt";
-                    sRutaPDF = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaPDF").Value.ToString()) + "\\" + sNombreDocumento + sPrefijo + '_' + sDocNumInvoice + ".pdf";
-                    sRutaCR = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaCR").Value.ToString());
-                    sGenerarXMLPrueba = Convert.ToString(oConsultaDocEntry.Fields.Item("GeneraXMLP").Value.ToString());
-                    sCountsEmails = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "CountsEmails");
-
-
-
-
+                    //Especifica la dirección de conexion para Emision y Adjuntos 
+                    EndpointAddress endPointEmision = new EndpointAddress(sURLEmision); //URL DEMO EMISION
+                    EndpointAddress endPointAdjuntos = new EndpointAddress(sURLAdjuntos); //URL DEMO ADJUNTOS          
 
                     #endregion
 
-                    if (sStatusDoc == "200")
+                    #region Variables
+
+                    string sDocNumInvoice = null;
+                    string sSerieNumeracion = null;
+                    string sQueryDocEntryDocument = null;
+                    string sDocEntryInvoice = null;
+                    string sProcedureXML = null;
+                    string sDocumentoCabecera = null;
+                    string sDocumentoLinea = null;
+                    string sDocumentoImpuestosGenerales = null;
+                    string sDocumentoImpuestosTotales = null;
+                    string sParametrosTFHKA = null;
+                    string sRutaCR = null;
+                    string sPrefijoConDoc = null;
+                    string sPrefijo = null;
+                    string sStatusDoc = null;
+                    string sFormaEnvio = null;
+                    string sLlave = null;
+                    string sPassword = null;
+                    string sUserDB = null;
+                    string sPassDB = null;
+                    string sRutaPDF = null;
+                    string sRutaXML = null;
+                    string sNombreDocumento = null;
+                    string sNombreDocWarning = null;
+                    string sCUFEInvoice = null;
+                    int sReprocesar = 0;
+                    string sGenerarXMLPrueba = null;
+                    string sCountsEmails = null;
+
+                    Boolean GeneroPDF = false;
+
+                    if (_TipoDocumento == "FacturaDeClientes")
                     {
-                        #region Si el estado del documento es 200 Pregunta al usuario si desea volver aenviar la factura a la DIAN, 
+                        sNombreDocumento = "Factura_de_Venta_No_";
+                        sNombreDocWarning = "Factura de venta";
+                    }
+                    else if (_TipoDocumento == "NotaCreditoClientes")
+                    {
+                        sNombreDocumento = "Nota_Credito_No_";
+                        sNombreDocWarning = "Nota credito de clientes";
+                    }
+                    else if (_TipoDocumento == "NotaDebitoClientes")
+                    {
+                        sNombreDocumento = "Nota_debito_Clientes_No_";
+                        sNombreDocWarning = "Nota debito de clientes";
+                    }
 
-                        sReprocesar = DllFunciones.sendMessageBoxY_N(_sboapp, "La " + sNombreDocWarning + " ya fue emitida a la DIAN, ¿ Desea volver a enviarla ?");
+                    #endregion
 
-                        if (sReprocesar == 1)
+                    if (sTipoIntegracion == "On")
+                    {
+                        #region Consulta de documento en la base de datos y el estado del documento
+
+                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 1: Consultando " + sNombreDocWarning + " ...");
+
+                        #region Obtiene el DocEntry
+
+                        XmlDocument XmlByRef = new XmlDocument();
+
+                        XmlByRef.LoadXml(ByRef.ObjectKey);
+
+                        sDocEntryInvoice = XmlByRef.SelectSingleNode("DocumentParams/DocEntry").InnerText;
+
+                        #endregion
+
+                        SAPbobsCOM.Recordset oGetDocNumAndSeries = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                        sQueryDocEntryDocument = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetDocNumAndSeries");
+
+                        if (_TipoDocumento == "FacturaDeClientes")
                         {
+                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%Table%", "OINV").Replace("%NewObjectKey%", sDocEntryInvoice);
+                        }
+                        else if (_TipoDocumento == "NotaCreditoClientes")
+                        {
+                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%Table%", "ORIN").Replace("%NewObjectKey%", sDocEntryInvoice);
+                        }
+                        else if (_TipoDocumento == "NotaDebitoClientes")
+                        {
+                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%Table%", "OINV").Replace("%NewObjectKey%", sDocEntryInvoice);
+                        }
+
+                        oGetDocNumAndSeries.DoQuery(sQueryDocEntryDocument);
+
+                        sDocNumInvoice = Convert.ToString(oGetDocNumAndSeries.Fields.Item("DocNum").Value.ToString());
+                        sSerieNumeracion = Convert.ToString(oGetDocNumAndSeries.Fields.Item("Series").Value.ToString());
+
+                        DllFunciones.liberarObjetos(oGetDocNumAndSeries);
+
+                        SAPbobsCOM.Recordset oConsultaDocEntry = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                        sQueryDocEntryDocument = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetDocEntryAndParameters");
+
+                        if (_TipoDocumento == "FacturaDeClientes")
+                        {
+                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "OINV").Replace("%DocSubType%", "--");
+                        }
+                        else if (_TipoDocumento == "NotaCreditoClientes")
+                        {
+                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "ORIN").Replace("%DocSubType%", "--");
+                        }
+                        else if (_TipoDocumento == "NotaDebitoClientes")
+                        {
+                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "OINV").Replace("%DocSubType%", "DN");
+                        }
+
+                        oConsultaDocEntry.DoQuery(sQueryDocEntryDocument);
+
+                        sPrefijo = Convert.ToString(oConsultaDocEntry.Fields.Item("PrefijoDes").Value.ToString());
+                        sStatusDoc = Convert.ToString(oConsultaDocEntry.Fields.Item("CRWS").Value.ToString());
+                        sFormaEnvio = Convert.ToString(oConsultaDocEntry.Fields.Item("FormaEnvio").Value.ToString());
+                        sLlave = Convert.ToString(oConsultaDocEntry.Fields.Item("Llave").Value.ToString());
+                        sPassword = Convert.ToString(oConsultaDocEntry.Fields.Item("Password").Value.ToString());
+                        sUserDB = Convert.ToString(oConsultaDocEntry.Fields.Item("UserDB").Value.ToString());
+                        sPassDB = Convert.ToString(oConsultaDocEntry.Fields.Item("PassDB").Value.ToString());
+                        sRutaXML = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaXML").Value.ToString()) + "\\" + sNombreDocumento + sPrefijo + '_' + sDocNumInvoice + ".txt";
+                        sRutaPDF = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaPDF").Value.ToString()) + "\\" + sNombreDocumento + sPrefijo + '_' + sDocNumInvoice + ".pdf";
+                        sRutaCR = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaCR").Value.ToString());
+                        sGenerarXMLPrueba = Convert.ToString(oConsultaDocEntry.Fields.Item("GeneraXMLP").Value.ToString());
+                        sCountsEmails = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "CountsEmails");
+
+
+
+
+
+                        #endregion
+
+                        if (sStatusDoc == "200")
+                        {
+                            #region Si el estado del documento es 200 Pregunta al usuario si desea volver aenviar la factura a la DIAN, 
+
+                            sReprocesar = DllFunciones.sendMessageBoxY_N(_sboapp, "La " + sNombreDocWarning + " ya fue emitida a la DIAN, ¿ Desea volver a enviarla ?");
+
+                            if (sReprocesar == 1)
+                            {
+                                if (oConsultaDocEntry.RecordCount > 0)
+                                {
+
+                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 2: Creando Objeto " + sNombreDocWarning + " ...");
+
+                                    #region Si existe el numero de Documento, busca y crea el objeto factura
+
+                                    sDocEntryInvoice = oConsultaDocEntry.Fields.Item(0).Value.ToString();
+
+                                    SAPbobsCOM.Recordset oCabeceraDocumento = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                                    SAPbobsCOM.Recordset oLineasDocumento = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                                    SAPbobsCOM.Recordset oImpuestosGenerales = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                                    SAPbobsCOM.Recordset oImpuestosTotales = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                                    SAPbobsCOM.Recordset oCUFEInvoice = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                                    sProcedureXML = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "ExecProcedureBOFacturaXML");
+
+                                    if (_TipoDocumento == "FacturaDeClientes")
+                                    {
+                                        sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Encabezado");
+                                        sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Lineas");
+                                        sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Impuestos");
+                                        sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                    }
+                                    else if (_TipoDocumento == "NotaCreditoClientes")
+                                    {
+                                        sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Encabezado");
+                                        sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Lineas");
+                                        sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Impuestos");
+                                        sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                    }
+                                    else if (_TipoDocumento == "NotaDebitoClientes")
+                                    {
+                                        sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Encabezado");
+                                        sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Lineas");
+                                        sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Impuestos");
+                                        sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                    }
+
+                                    oCabeceraDocumento.DoQuery(sDocumentoCabecera);
+                                    oLineasDocumento.DoQuery(sDocumentoLinea);
+                                    oImpuestosGenerales.DoQuery(sDocumentoImpuestosGenerales);
+                                    oImpuestosTotales.DoQuery(sDocumentoImpuestosTotales);
+
+                                    if (_TipoDocumento == "NotaCreditoClientes")
+                                    {
+                                        sCUFEInvoice = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetCUFEInvoice");
+                                        sCUFEInvoice = sCUFEInvoice.Replace("%DocNum%", Convert.ToString(oCabeceraDocumento.Fields.Item("No_FV").Value.ToString()));
+
+                                        oCUFEInvoice.DoQuery(sCUFEInvoice);
+                                    }
+                                    else if (_TipoDocumento == "NotaDebitoClientes")
+                                    {
+                                        sCUFEInvoice = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetCUFEDebitNote");
+                                        sCUFEInvoice = sCUFEInvoice.Replace("%DocNum%", Convert.ToString(oCabeceraDocumento.Fields.Item("No_FV").Value.ToString()));
+
+                                        oCUFEInvoice.DoQuery(sCUFEInvoice);
+
+                                    }
+                                    FacturaGeneral Documento = oBuillInvoice(oCabeceraDocumento, oLineasDocumento, oImpuestosGenerales, oImpuestosTotales, oCUFEInvoice, _TipoDocumento);
+
+                                    #endregion
+
+                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 3: Guardando TXT " + sNombreDocWarning + " ...");
+
+                                    #region Guarda el TXT en la ruta del XML configurada
+
+                                    StreamWriter MyFile = new StreamWriter(sRutaXML); //ruta y name del archivo request a almecenar
+
+
+                                    #endregion
+
+                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 4: Serealizando la " + sNombreDocWarning + " ...");
+
+                                    #region Serealizando el documento
+
+                                    SAPbobsCOM.Recordset oParametrosTFHKA = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                                    sParametrosTFHKA = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetParameterstoSend");
+
+                                    oParametrosTFHKA.DoQuery(sParametrosTFHKA);
+
+                                    XmlSerializer Serializer1 = new XmlSerializer(typeof(FacturaGeneral));
+                                    Serializer1.Serialize(MyFile, Documento); // Objeto serializado
+                                    MyFile.Close();
+
+                                    if (sGenerarXMLPrueba == "N")
+                                    {
+                                        File.Delete(sRutaXML);
+                                    }
+
+                                    #endregion
+
+                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Enviando " + sNombreDocWarning + " a TFHKA...");
+
+                                    #region Envio del objeto factura a TFHKA
+
+                                    serviceClient = new eBilling.ServicioEmisionFE.ServiceClient(port, endPointEmision);
+                                    serviceClientAdjuntos = new eBilling.ServicioAdjuntosFE.ServiceClient(port, endPointAdjuntos);
+
+                                    DocumentResponse RespuestaDoc = new eBilling.ServicioEmisionFE.DocumentResponse(); //objeto Response del metodo enviar
+
+                                    if (string.IsNullOrEmpty(sLlave))
+                                    {
+                                        DllFunciones.sendMessageBox(_sboapp, "Error Paso 4: No se ha parametrizado la llave de TFHKA en la configuracion Inicial, por lo cual no se puede enviar la factura a la DIAN ");
+                                    }
+                                    else if (string.IsNullOrEmpty(sPassword))
+                                    {
+                                        DllFunciones.sendMessageBox(_sboapp, "Error Paso 4: No se ha parametrizado el password de TFHKA en la configuracion Inicial, por lo cual no se puede enviar la factura a la DIAN");
+                                    }
+                                    else
+                                    {
+                                        #region Respuesta el Web Service de TFHKA y actualizacion de los campos en la factura
+
+                                        RespuestaDoc = serviceClient.Enviar(sLlave, sPassword, Documento, sFormaEnvio);
+
+                                        if (RespuestaDoc.codigo == 200)
+                                        {
+                                            #region Procesa la repuesta
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: " + sNombreDocWarning + " enviada correctamente a TFHKA");
+
+                                            #region Se actualiza el documento en SAP con las respuesta de TFHKA
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
+
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Valida la forma de envio,si es 11,  genera el PDF y retorna confirmacion de la generacion del PDF
+
+                                            if (sFormaEnvio == "11")
+                                            {
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Generando PDF, por favor espere ...");
+
+                                                FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
+
+                                                if (ValidacionPDF.Exists)
+                                                {
+                                                    GeneroPDF = true;
+                                                }
+                                                else
+                                                {
+                                                    GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
+                                                }
+                                            }
+
+                                            #endregion
+
+                                            #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
+
+                                            if (GeneroPDF == true)
+                                            {
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF, por favor espere ...");
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                            }
+
+                                            #endregion
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
+
+                                            #region Envia el PDF al proveedor tecnologico TFHKA
+
+                                            sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
+
+                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+
+                                            #endregion
+
+                                            #region Se descarga el XML y se adjunta a la factura de venta
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
+
+                                            #region Descarga el XML y retorna la confirmacion
+
+                                            bool DescargoXML = false;
+
+                                            DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
+
+                                            #endregion
+
+                                            #region Actualiza el campo de XML en el documento de SAP
+
+                                            if (DescargoXML == true)
+                                            {
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
+                                                }
+
+                                            }
+                                            else
+                                            {
+
+                                            }
+
+                                            #endregion
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
+
+                                            _sboapp.ActivateMenuItem("1304");
+
+                                            #endregion
+
+
+                                            DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+
+
+                                            #endregion
+                                        }
+                                        else if (RespuestaDoc.codigo == 201)
+                                        {
+                                            #region Procesa la respuesta                             
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: " + sNombreDocWarning + " enviada correctamente a TFHKA");
+
+                                            #region Consulta el estado del documento en TFHKA
+
+                                            sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
+                                            DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
+
+                                            #endregion
+
+                                            #region Actualiza el documento con la respuesta de TFHKA
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
+                                            }
+                                            #endregion
+
+                                            if (resp.codigo == 200)
+                                            {
+                                                #region Valida la forma de envio,si es 11,  genera el PDF y retorna confirmacion de la generacion del PDF
+
+                                                if (sFormaEnvio == "11")
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Generando PDF, por favor espere ...");
+
+                                                    FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
+
+                                                    if (ValidacionPDF.Exists)
+                                                    {
+                                                        GeneroPDF = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision finalizado con exito.");
+                                                }
+
+                                                DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
+
+                                                #endregion
+                                            }
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+                                        }
+                                        else if (RespuestaDoc.codigo == 101)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje, "", "", null, null);
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje, "", "", null, null);
+                                            }
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+                                        }
+                                        else if (RespuestaDoc.codigo == 99)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
+                                            }
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.reglasValidacionDIAN.ToString());
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+                                        }
+
+                                        else if (RespuestaDoc.codigo == 109)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensajesValidacion.GetValue(0)), "", "", null, null);
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensajesValidacion.GetValue(0)), "", "", null, null);
+                                            }
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + " " + RespuestaDoc.mensajesValidacion.GetValue(0));
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+                                        }
+                                        else if (RespuestaDoc.codigo == 110)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes")) if (_TipoDocumento == "FacturaDeClientes")
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ", "", "", null, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ", "", "", null, null);
+                                                }
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ");
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+                                        }
+                                        else if (RespuestaDoc.codigo == 111)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                            }
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+
+                                        }
+                                        else if (RespuestaDoc.codigo == 112)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                            }
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+                                        }
+                                        else if (RespuestaDoc.codigo == 150)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                            #endregion
+                                        }
+                                        else if (RespuestaDoc.codigo == 114)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Consultando el estado del documento a TFHKA, por favor espere ...");
+
+                                            #region Consulta el estado del documento en el proveedor tecnologico
+
+                                            sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
+                                            DocumentStatusResponse resp = new eBilling.ServicioEmisionFE.DocumentStatusResponse();
+                                            resp = serviceClient.EstadoDocumento(sLlave, sPassword, sPrefijoConDoc);
+
+                                            #endregion
+
+                                            #region Se actualiza la factura con las respuesta de TFHKA
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
+                                            }
+
+                                            #endregion
+
+                                            #region Valida la forma de envio, si es 11 genera el PDF y retorna confirmacion de la generacion del PDF
+
+                                            if (sFormaEnvio == "11")
+                                            {
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: Generando PDF, por favor espere ...");
+
+                                                FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
+
+                                                if (ValidacionPDF.Exists)
+                                                {
+                                                    GeneroPDF = true;
+                                                }
+                                                else
+                                                {
+                                                    GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
+                                                }
+
+                                            }
+
+                                            #endregion
+
+                                            #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
+
+                                            if (GeneroPDF == true)
+                                            {
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, null, resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, null, resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                }
+
+                                                #region Envia el PDF al proveedor tecnologico TFHKA
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
+
+                                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+
+                                                #endregion
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
+
+                                            }
+                                            else
+                                            {
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Actualizando campos, por favor espere ...");
+
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, null);
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision Finalizado ...");
+                                            }
+
+                                            #endregion
+
+                                            #region Se descarga el XML y se adjunta a la factura de venta
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
+
+                                            #region Descarga el XML y retorna la confirmacion
+
+                                            bool DescargoXML = false;
+
+                                            DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, sLlave, sPassword, sRutaXML);
+
+                                            #endregion
+
+                                            #region Actualiza el campo de XML en el documento de SAP
+
+                                            if (DescargoXML == true)
+                                            {
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+                                                }
+
+                                            }
+                                            else
+                                            {
+
+                                            }
+
+                                            #endregion
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
+
+                                            #endregion
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+                                        }
+                                        else if (RespuestaDoc.codigo == 1)
+                                        {
+                                            #region Procesa la respuesta
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Consultando el estado del documento a TFHKA, por favor espere ...");
+
+                                            #region Consulta el estado del documento en el proveedor tecnologico
+
+                                            sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
+                                            DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
+
+                                            #endregion
+
+                                            #region Se actualiza la factura con las respuesta de TFHKA
+
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
+                                            }
+
+                                            #endregion
+
+                                            #region Valida la forma de envio, si es 11 genera el PDF y retorna confirmacion de la generacion del PDF
+
+                                            if (sFormaEnvio == "11")
+                                            {
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: Generando PDF, por favor espere ...");
+
+                                                FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
+
+                                                if (ValidacionPDF.Exists)
+                                                {
+                                                    GeneroPDF = true;
+                                                }
+                                                else
+                                                {
+                                                    GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
+                                                }
+
+                                            }
+
+                                            #endregion
+
+                                            #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
+
+                                            if (GeneroPDF == true)
+                                            {
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
+
+                                                if (_TipoDocumento == "FacturaDeClientes")
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                }
+
+                                                #region Envia el PDF al proveedor tecnologico TFHKA
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
+
+                                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+
+                                                #endregion
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
+
+                                            }
+                                            else
+                                            {
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Actualizando campos, por favor espere ...");
+
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, null);
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision Finalizado ...");
+                                            }
+
+                                            #endregion
+
+                                            #region Se descarga el XML y se adjunta a la factura de venta
+
+                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
+
+                                            #region Descarga el XML y retorna la confirmacion
+
+                                            bool DescargoXML = false;
+
+                                            DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
+
+                                            #endregion
+
+                                            #region Actualiza el campo de XML en el documento de SAP
+
+                                            if (DescargoXML == true)
+                                            {
+
+                                                if (_TipoDocumento == "FacturaDeClientes")
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
+                                                }
+
+                                            }
+                                            else
+                                            {
+
+                                            }
+
+                                            #endregion
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento autorizado por la DIAN");
+
+                                            _sboapp.ActivateMenuItem("1304");
+
+                                            #endregion
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documentos autorizado por la DIAN");
+
+                                            if (sTipoIntegracion == "On")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                _sboapp.ActivateMenuItem("1304");
+                                            }
+
+                                            #endregion
+                                        }
+
+                                    }
+
+
+                                    #endregion
+                                }
+                                else
+                                {
+                                    DllFunciones.sendMessageBox(_sboapp, "Error Paso 1: No se encontraron facturas para enviar");
+                                }
+
+                            }
+                            #endregion
+
+                            #endregion
+                        }
+                        else
+                        {
+                            #region Si el estado del documento es != 200, envia el documento a la DIAN 
+
                             if (oConsultaDocEntry.RecordCount > 0)
                             {
 
@@ -5822,7 +6603,14 @@ namespace eBilling
 
                                         DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
 
-                                        _sboapp.ActivateMenuItem("1304");
+                                        if (sTipoIntegracion == "On")
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            _sboapp.ActivateMenuItem("1304");
+                                        }
 
                                         #endregion
 
@@ -5971,11 +6759,11 @@ namespace eBilling
 
                                         if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
                                         {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensajesValidacion.GetValue(0)), "", "", null, null);
+                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensaje.ToString()), "", "", null, null);
                                         }
                                         else if (_TipoDocumento == "NotaCreditoClientes")
                                         {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensajesValidacion.GetValue(0)), "", "", null, null);
+                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensaje.ToString()), "", "", null, null);
                                         }
 
                                         DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + " " + RespuestaDoc.mensajesValidacion.GetValue(0));
@@ -6366,971 +7154,894 @@ namespace eBilling
                                 DllFunciones.sendMessageBox(_sboapp, "Error Paso 1: No se encontraron facturas para enviar");
                             }
 
+
+                            #endregion
+
+                            #endregion
                         }
-                        #endregion
 
-                        #endregion
                     }
-                    else
+
+                    #endregion
+                }
+                else if (TipodeEvento == "ItemEvent")
+                {
+                    if (TipoIntegracion == "A")
                     {
-                        #region Si el estado del documento es != 200, envia el documento a la DIAN 
-
-                        if (oConsultaDocEntry.RecordCount > 0)
+                        if (_oFormInvoices.Mode == BoFormMode.fm_OK_MODE)
                         {
+                            #region Envio del documento por el Modulo 
 
-                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 2: Creando Objeto " + sNombreDocWarning + " ...");
+                            #region Consulta URL
 
-                            #region Si existe el numero de Documento, busca y crea el objeto factura
+                            string sGetModo = null;
+                            string sURLEmision = null;
+                            string sURLAdjuntos = null;
+                            string sModo = null;
+                            string sProtocoloComunicacion = null;
 
-                            sDocEntryInvoice = oConsultaDocEntry.Fields.Item(0).Value.ToString();
+                            SAPbobsCOM.Recordset oConsultarGetModo = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
-                            SAPbobsCOM.Recordset oCabeceraDocumento = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                            SAPbobsCOM.Recordset oLineasDocumento = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                            SAPbobsCOM.Recordset oImpuestosGenerales = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                            SAPbobsCOM.Recordset oImpuestosTotales = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                            SAPbobsCOM.Recordset oCUFEInvoice = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                            sGetModo = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetModoandURL");
 
-                            sProcedureXML = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "ExecProcedureBOFacturaXML");
+                            sGetModo = sGetModo.Replace("%Estado%", "\"U_BO_Status\" = 'Y'").Replace("%DocEntry%", " ");
+
+                            oConsultarGetModo.DoQuery(sGetModo);
+
+                            sURLEmision = Convert.ToString(oConsultarGetModo.Fields.Item("URLTFHKA").Value.ToString()) + "/ws/v1.0/Service.svc?wsdl";
+                            sURLAdjuntos = Convert.ToString(oConsultarGetModo.Fields.Item("URLTFHKA").Value.ToString()) + "/ws/adjuntos/Service.svc?wsdl";
+                            sModo = Convert.ToString(oConsultarGetModo.Fields.Item("Modo").Value.ToString());
+                            sProtocoloComunicacion = Convert.ToString(oConsultarGetModo.Fields.Item("ProtocoloComunicacion").Value.ToString());
+
+                            DllFunciones.liberarObjetos(oConsultarGetModo);
+
+                            #endregion
+
+                            #region Instanciacion parametros TFHKA
+
+                            //Especifica el puerto (HTTP o HTTPS)
+                            if (sProtocoloComunicacion == "HTTP")
+                            {
+                                BasicHttpBinding port = new BasicHttpBinding();
+                            }
+                            else if (sProtocoloComunicacion == "HTTPS")
+                            {
+                                BasicHttpsBinding port = new BasicHttpsBinding();
+                            }
+
+                            port.MaxBufferPoolSize = Int32.MaxValue;
+                            port.MaxBufferSize = Int32.MaxValue;
+                            port.MaxReceivedMessageSize = Int32.MaxValue;
+                            port.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
+                            port.SendTimeout = TimeSpan.FromMinutes(2);
+                            port.ReceiveTimeout = TimeSpan.FromMinutes(2);
+
+                            if (sProtocoloComunicacion == "HTTPS")
+                            {
+                                port.Security.Mode = BasicHttpSecurityMode.Transport;
+                            }
+
+                            //Especifica la dirección de conexion para Emision y Adjuntos 
+                            EndpointAddress endPointEmision = new EndpointAddress(sURLEmision); //URL DEMO EMISION
+                            EndpointAddress endPointAdjuntos = new EndpointAddress(sURLAdjuntos); //URL DEMO ADJUNTOS          
+
+                            #endregion
+
+                            #region Variables
+
+                            string sDocNumInvoice = null;
+                            string sSerieNumeracion = null;
+                            string sQueryDocEntryDocument = null;
+                            string sDocEntryInvoice = null;
+                            string sProcedureXML = null;
+                            string sDocumentoCabecera = null;
+                            string sDocumentoLinea = null;
+                            string sDocumentoImpuestosGenerales = null;
+                            string sDocumentoImpuestosTotales = null;
+                            string sParametrosTFHKA = null;
+                            string sRutaCR = null;
+                            string sPrefijoConDoc = null;
+                            string sPrefijo = null;
+                            string sStatusDoc = null;
+                            string sFormaEnvio = null;
+                            string sLlave = null;
+                            string sPassword = null;
+                            string sUserDB = null;
+                            string sPassDB = null;
+                            string sRutaPDF = null;
+                            string sRutaXML = null;
+                            string sNombreDocumento = null;
+                            string sNombreDocWarning = null;
+                            string sCUFEInvoice = null;
+                            int sReprocesar = 0;
+                            string sGenerarXMLPrueba = null;
+                            string sCountsEmails = null;
+
+                            Boolean GeneroPDF = false;
 
                             if (_TipoDocumento == "FacturaDeClientes")
                             {
-                                sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Encabezado");
-                                sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Lineas");
-                                sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Impuestos");
-                                sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                sNombreDocumento = "Factura_de_Venta_No_";
+                                sNombreDocWarning = "Factura de venta";
                             }
                             else if (_TipoDocumento == "NotaCreditoClientes")
                             {
-                                sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Encabezado");
-                                sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Lineas");
-                                sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Impuestos");
-                                sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                sNombreDocumento = "Nota_Credito_No_";
+                                sNombreDocWarning = "Nota credito de clientes";
                             }
                             else if (_TipoDocumento == "NotaDebitoClientes")
                             {
-                                sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Encabezado");
-                                sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Lineas");
-                                sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Impuestos");
-                                sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                sNombreDocumento = "Nota_debito_Clientes_No_";
+                                sNombreDocWarning = "Nota debito de clientes";
                             }
 
-                            oCabeceraDocumento.DoQuery(sDocumentoCabecera);
-                            oLineasDocumento.DoQuery(sDocumentoLinea);
-                            oImpuestosGenerales.DoQuery(sDocumentoImpuestosGenerales);
-                            oImpuestosTotales.DoQuery(sDocumentoImpuestosTotales);
+                            #endregion
 
-                            if (_TipoDocumento == "NotaCreditoClientes")
+                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 1: Consultando " + sNombreDocWarning + " ...");
+
+                            #region Consulta de documento en la base de datos y el estado del documento
+
+                            sDocNumInvoice = ((SAPbouiCOM.EditText)(_oFormInvoices.Items.Item("8").Specific)).Value.ToString();
+                            SAPbouiCOM.ComboBox cbSerieNumeracion = (SAPbouiCOM.ComboBox)(_oFormInvoices.Items.Item("88").Specific);
+                            sSerieNumeracion = cbSerieNumeracion.Selected.Value;
+
+                            SAPbobsCOM.Recordset oConsultaDocEntry = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                            sQueryDocEntryDocument = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetDocEntryAndParameters");
+
+                            if (_TipoDocumento == "FacturaDeClientes")
                             {
-                                sCUFEInvoice = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetCUFEInvoice");
-                                sCUFEInvoice = sCUFEInvoice.Replace("%DocNum%", Convert.ToString(oCabeceraDocumento.Fields.Item("No_FV").Value.ToString()));
-
-                                oCUFEInvoice.DoQuery(sCUFEInvoice);
+                                sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "OINV").Replace("%DocSubType%", "--");
+                            }
+                            else if (_TipoDocumento == "NotaCreditoClientes")
+                            {
+                                sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "ORIN").Replace("%DocSubType%", "--");
                             }
                             else if (_TipoDocumento == "NotaDebitoClientes")
                             {
-                                sCUFEInvoice = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetCUFEDebitNote");
-                                sCUFEInvoice = sCUFEInvoice.Replace("%DocNum%", Convert.ToString(oCabeceraDocumento.Fields.Item("No_FV").Value.ToString()));
-
-                                oCUFEInvoice.DoQuery(sCUFEInvoice);
-
+                                sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "OINV").Replace("%DocSubType%", "DN");
                             }
-                            FacturaGeneral Documento = oBuillInvoice(oCabeceraDocumento, oLineasDocumento, oImpuestosGenerales, oImpuestosTotales, oCUFEInvoice, _TipoDocumento);
+
+                            oConsultaDocEntry.DoQuery(sQueryDocEntryDocument);
+
+                            sPrefijo = Convert.ToString(oConsultaDocEntry.Fields.Item("PrefijoDes").Value.ToString());
+                            sStatusDoc = Convert.ToString(oConsultaDocEntry.Fields.Item("CRWS").Value.ToString());
+                            sFormaEnvio = Convert.ToString(oConsultaDocEntry.Fields.Item("FormaEnvio").Value.ToString());
+                            sLlave = Convert.ToString(oConsultaDocEntry.Fields.Item("Llave").Value.ToString());
+                            sPassword = Convert.ToString(oConsultaDocEntry.Fields.Item("Password").Value.ToString());
+                            sUserDB = Convert.ToString(oConsultaDocEntry.Fields.Item("UserDB").Value.ToString());
+                            sPassDB = Convert.ToString(oConsultaDocEntry.Fields.Item("PassDB").Value.ToString());
+                            sRutaXML = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaXML").Value.ToString()) + "\\" + sNombreDocumento + sPrefijo + '_' + sDocNumInvoice + ".txt";
+                            sRutaPDF = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaPDF").Value.ToString()) + "\\" + sNombreDocumento + sPrefijo + '_' + sDocNumInvoice + ".pdf";
+                            sRutaCR = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaCR").Value.ToString());
+                            sGenerarXMLPrueba = Convert.ToString(oConsultaDocEntry.Fields.Item("GeneraXMLP").Value.ToString());
+                            sCountsEmails = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "CountsEmails");
 
                             #endregion
 
-                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 3: Guardando TXT " + sNombreDocWarning + " ...");
-
-                            #region Guarda el TXT en la ruta del XML configurada
-
-                            StreamWriter MyFile = new StreamWriter(sRutaXML); //ruta y name del archivo request a almecenar
-
-
-                            #endregion
-
-                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 4: Serealizando la " + sNombreDocWarning + " ...");
-
-                            #region Serealizando el documento
-
-                            SAPbobsCOM.Recordset oParametrosTFHKA = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-                            sParametrosTFHKA = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetParameterstoSend");
-
-                            oParametrosTFHKA.DoQuery(sParametrosTFHKA);
-
-                            XmlSerializer Serializer1 = new XmlSerializer(typeof(FacturaGeneral));
-                            Serializer1.Serialize(MyFile, Documento); // Objeto serializado
-                            MyFile.Close();
-
-                            if (sGenerarXMLPrueba == "N")
+                            if (sStatusDoc == "200")
                             {
-                                File.Delete(sRutaXML);
-                            }
+                                #region Si el estado del documento es 200 Pregunta al usuario si desea volver aenviar la factura a la DIAN, 
 
-                            #endregion
+                                sReprocesar = DllFunciones.sendMessageBoxY_N(_sboapp, "La " + sNombreDocWarning + " ya fue emitida a la DIAN, ¿ Desea volver a enviarla ?");
 
-                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Enviando " + sNombreDocWarning + " a TFHKA...");
+                                if (sReprocesar == 1)
+                                {
+                                    if (oConsultaDocEntry.RecordCount > 0)
+                                    {
 
-                            #region Envio del objeto factura a TFHKA
+                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 2: Creando Objeto " + sNombreDocWarning + " ...");
 
-                            serviceClient = new eBilling.ServicioEmisionFE.ServiceClient(port, endPointEmision);
-                            serviceClientAdjuntos = new eBilling.ServicioAdjuntosFE.ServiceClient(port, endPointAdjuntos);
+                                        #region Si existe el numero de Documento, busca y crea el objeto factura
 
-                            DocumentResponse RespuestaDoc = new eBilling.ServicioEmisionFE.DocumentResponse(); //objeto Response del metodo enviar
+                                        sDocEntryInvoice = oConsultaDocEntry.Fields.Item(0).Value.ToString();
 
-                            if (string.IsNullOrEmpty(sLlave))
-                            {
-                                DllFunciones.sendMessageBox(_sboapp, "Error Paso 4: No se ha parametrizado la llave de TFHKA en la configuracion Inicial, por lo cual no se puede enviar la factura a la DIAN ");
-                            }
-                            else if (string.IsNullOrEmpty(sPassword))
-                            {
-                                DllFunciones.sendMessageBox(_sboapp, "Error Paso 4: No se ha parametrizado el password de TFHKA en la configuracion Inicial, por lo cual no se puede enviar la factura a la DIAN");
+                                        SAPbobsCOM.Recordset oCabeceraDocumento = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                                        SAPbobsCOM.Recordset oLineasDocumento = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                                        SAPbobsCOM.Recordset oImpuestosGenerales = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                                        SAPbobsCOM.Recordset oImpuestosTotales = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                                        SAPbobsCOM.Recordset oCUFEInvoice = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                                        sProcedureXML = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "ExecProcedureBOFacturaXML");
+
+                                        if (_TipoDocumento == "FacturaDeClientes")
+                                        {
+                                            sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Encabezado");
+                                            sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Lineas");
+                                            sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Impuestos");
+                                            sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                        }
+                                        else if (_TipoDocumento == "NotaCreditoClientes")
+                                        {
+                                            sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Encabezado");
+                                            sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Lineas");
+                                            sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Impuestos");
+                                            sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                        }
+                                        else if (_TipoDocumento == "NotaDebitoClientes")
+                                        {
+                                            sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Encabezado");
+                                            sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Lineas");
+                                            sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Impuestos");
+                                            sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "ImpuestosTotales");
+                                        }
+
+                                        oCabeceraDocumento.DoQuery(sDocumentoCabecera);
+                                        oLineasDocumento.DoQuery(sDocumentoLinea);
+                                        oImpuestosGenerales.DoQuery(sDocumentoImpuestosGenerales);
+                                        oImpuestosTotales.DoQuery(sDocumentoImpuestosTotales);
+
+                                        if (_TipoDocumento == "NotaCreditoClientes")
+                                        {
+                                            sCUFEInvoice = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetCUFEInvoice");
+                                            sCUFEInvoice = sCUFEInvoice.Replace("%DocNum%", Convert.ToString(oCabeceraDocumento.Fields.Item("No_FV").Value.ToString()));
+
+                                            oCUFEInvoice.DoQuery(sCUFEInvoice);
+                                        }
+                                        else if (_TipoDocumento == "NotaDebitoClientes")
+                                        {
+                                            sCUFEInvoice = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetCUFEDebitNote");
+                                            sCUFEInvoice = sCUFEInvoice.Replace("%DocNum%", Convert.ToString(oCabeceraDocumento.Fields.Item("No_FV").Value.ToString()));
+
+                                            oCUFEInvoice.DoQuery(sCUFEInvoice);
+
+                                        }
+                                        FacturaGeneral Documento = oBuillInvoice(oCabeceraDocumento, oLineasDocumento, oImpuestosGenerales, oImpuestosTotales, oCUFEInvoice, _TipoDocumento);
+
+                                        #endregion
+
+                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 3: Guardando TXT " + sNombreDocWarning + " ...");
+
+                                        #region Guarda el TXT en la ruta del XML configurada
+
+                                        StreamWriter MyFile = new StreamWriter(sRutaXML); //ruta y name del archivo request a almecenar
+
+
+                                        #endregion
+
+                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 4: Serealizando la " + sNombreDocWarning + " ...");
+
+                                        #region Serealizando el documento
+
+                                        SAPbobsCOM.Recordset oParametrosTFHKA = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                                        sParametrosTFHKA = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetParameterstoSend");
+
+                                        oParametrosTFHKA.DoQuery(sParametrosTFHKA);
+
+                                        XmlSerializer Serializer1 = new XmlSerializer(typeof(FacturaGeneral));
+                                        Serializer1.Serialize(MyFile, Documento); // Objeto serializado
+                                        MyFile.Close();
+
+                                        if (sGenerarXMLPrueba == "N")
+                                        {
+                                            File.Delete(sRutaXML);
+                                        }
+
+                                        #endregion
+
+                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Enviando " + sNombreDocWarning + " a TFHKA...");
+
+                                        #region Envio del objeto factura a TFHKA
+
+                                        serviceClient = new eBilling.ServicioEmisionFE.ServiceClient(port, endPointEmision);
+                                        serviceClientAdjuntos = new eBilling.ServicioAdjuntosFE.ServiceClient(port, endPointAdjuntos);
+
+                                        DocumentResponse RespuestaDoc = new eBilling.ServicioEmisionFE.DocumentResponse(); //objeto Response del metodo enviar
+
+                                        if (string.IsNullOrEmpty(sLlave))
+                                        {
+                                            DllFunciones.sendMessageBox(_sboapp, "Error Paso 4: No se ha parametrizado la llave de TFHKA en la configuracion Inicial, por lo cual no se puede enviar la factura a la DIAN ");
+                                        }
+                                        else if (string.IsNullOrEmpty(sPassword))
+                                        {
+                                            DllFunciones.sendMessageBox(_sboapp, "Error Paso 4: No se ha parametrizado el password de TFHKA en la configuracion Inicial, por lo cual no se puede enviar la factura a la DIAN");
+                                        }
+                                        else
+                                        {
+                                            #region Respuesta el Web Service de TFHKA y actualizacion de los campos en la factura
+
+                                            RespuestaDoc = serviceClient.Enviar(sLlave, sPassword, Documento, sFormaEnvio);
+
+                                            if (RespuestaDoc.codigo == 200)
+                                            {
+                                                #region Procesa la repuesta
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: " + sNombreDocWarning + " enviada correctamente a TFHKA");
+
+                                                #region Se actualiza el documento en SAP con las respuesta de TFHKA
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
+                                                    //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
+
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
+                                                    //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
+
+                                                }
+
+                                                #endregion
+
+                                                #region Valida la forma de envio,si es 11,  genera el PDF y retorna confirmacion de la generacion del PDF
+
+                                                if (sFormaEnvio == "11")
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Generando PDF, por favor espere ...");
+
+                                                    FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
+
+                                                    if (ValidacionPDF.Exists)
+                                                    {
+                                                        GeneroPDF = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
+                                                    }
+                                                }
+
+                                                #endregion
+
+                                                #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
+
+                                                if (GeneroPDF == true)
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF, por favor espere ...");
+
+                                                    if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                    {
+                                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
+                                                    }
+                                                    else if (_TipoDocumento == "NotaCreditoClientes")
+                                                    {
+                                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                }
+
+                                                #endregion
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
+
+                                                #region Envia el PDF al proveedor tecnologico TFHKA
+
+                                                sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
+
+                                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+
+                                                #endregion
+
+                                                #region Se descarga el XML y se adjunta a la factura de venta
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
+
+                                                #region Descarga el XML y retorna la confirmacion
+
+                                                bool DescargoXML = false;
+
+                                                DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
+
+                                                #endregion
+
+                                                #region Actualiza el campo de XML en el documento de SAP
+
+                                                if (DescargoXML == true)
+                                                {
+
+                                                    if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                    {
+                                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+
+                                                    }
+                                                    else if (_TipoDocumento == "NotaCreditoClientes")
+                                                    {
+                                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
+                                                    }
+
+                                                }
+                                                else
+                                                {
+
+                                                }
+
+                                                #endregion
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+
+
+                                                DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+                                            }
+                                            else if (RespuestaDoc.codigo == 201)
+                                            {
+                                                #region Procesa la respuesta                             
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: " + sNombreDocWarning + " enviada correctamente a TFHKA");
+
+                                                #region Consulta el estado del documento en TFHKA
+
+                                                sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
+                                                DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
+
+                                                #endregion
+
+                                                #region Actualiza el documento con la respuesta de TFHKA
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                    //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                    //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
+                                                }
+                                                #endregion
+
+                                                if (resp.codigo == 200)
+                                                {
+                                                    #region Valida la forma de envio,si es 11,  genera el PDF y retorna confirmacion de la generacion del PDF
+
+                                                    if (sFormaEnvio == "11")
+                                                    {
+                                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Generando PDF, por favor espere ...");
+
+                                                        FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
+
+                                                        if (ValidacionPDF.Exists)
+                                                        {
+                                                            GeneroPDF = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision finalizado con exito.");
+                                                    }
+
+                                                    DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
+
+                                                    #endregion
+                                                }
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+                                            }
+                                            else if (RespuestaDoc.codigo == 101)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje, "", "", null, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje, "", "", null, null);
+                                                }
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+                                            }
+                                            else if (RespuestaDoc.codigo == 99)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
+                                                }
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.reglasValidacionDIAN.ToString());
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+                                            }
+
+                                            else if (RespuestaDoc.codigo == 109)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensajesValidacion.GetValue(0)), "", "", null, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensajesValidacion.GetValue(0)), "", "", null, null);
+                                                }
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + " " + RespuestaDoc.mensajesValidacion.GetValue(0));
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+                                            }
+                                            else if (RespuestaDoc.codigo == 110)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes")) if (_TipoDocumento == "FacturaDeClientes")
+                                                    {
+                                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ", "", "", null, null);
+                                                    }
+                                                    else if (_TipoDocumento == "NotaCreditoClientes")
+                                                    {
+                                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ", "", "", null, null);
+                                                    }
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ");
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+                                            }
+                                            else if (RespuestaDoc.codigo == 111)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                                }
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+
+                                            }
+                                            else if (RespuestaDoc.codigo == 112)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                                }
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+                                            }
+                                            else if (RespuestaDoc.codigo == 150)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                                #endregion
+                                            }
+                                            else if (RespuestaDoc.codigo == 114)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Consultando el estado del documento a TFHKA, por favor espere ...");
+
+                                                #region Consulta el estado del documento en el proveedor tecnologico
+
+                                                sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
+                                                DocumentStatusResponse resp = new eBilling.ServicioEmisionFE.DocumentStatusResponse();
+                                                resp = serviceClient.EstadoDocumento(sLlave, sPassword, sPrefijoConDoc);
+
+                                                #endregion
+
+                                                #region Se actualiza la factura con las respuesta de TFHKA
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                    //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                    //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
+                                                }
+
+                                                #endregion
+
+                                                #region Valida la forma de envio, si es 11 genera el PDF y retorna confirmacion de la generacion del PDF
+
+                                                if (sFormaEnvio == "11")
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: Generando PDF, por favor espere ...");
+
+                                                    FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
+
+                                                    if (ValidacionPDF.Exists)
+                                                    {
+                                                        GeneroPDF = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
+                                                    }
+
+                                                }
+
+                                                #endregion
+
+                                                #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
+
+                                                if (GeneroPDF == true)
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
+
+                                                    if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                    {
+                                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, null, resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                    }
+                                                    else if (_TipoDocumento == "NotaCreditoClientes")
+                                                    {
+                                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, null, resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                    }
+
+                                                    #region Envia el PDF al proveedor tecnologico TFHKA
+
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
+
+                                                    EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+
+                                                    #endregion
+
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
+
+                                                }
+                                                else
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Actualizando campos, por favor espere ...");
+
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, null);
+
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision Finalizado ...");
+                                                }
+
+                                                #endregion
+
+                                                #region Se descarga el XML y se adjunta a la factura de venta
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
+
+                                                #region Descarga el XML y retorna la confirmacion
+
+                                                bool DescargoXML = false;
+
+                                                DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, sLlave, sPassword, sRutaXML);
+
+                                                #endregion
+
+                                                #region Actualiza el campo de XML en el documento de SAP
+
+                                                if (DescargoXML == true)
+                                                {
+
+                                                    if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                    {
+                                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+
+                                                    }
+                                                    else if (_TipoDocumento == "NotaCreditoClientes")
+                                                    {
+                                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+                                                    }
+
+                                                }
+                                                else
+                                                {
+
+                                                }
+
+                                                #endregion
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+
+                                                #endregion
+                                            }
+                                            else if (RespuestaDoc.codigo == 1)
+                                            {
+                                                #region Procesa la respuesta
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Consultando el estado del documento a TFHKA, por favor espere ...");
+
+                                                #region Consulta el estado del documento en el proveedor tecnologico
+
+                                                sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
+                                                DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
+
+                                                #endregion
+
+                                                #region Se actualiza la factura con las respuesta de TFHKA
+
+                                                if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                                {
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                    //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
+                                                }
+                                                else if (_TipoDocumento == "NotaCreditoClientes")
+                                                {
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
+                                                    //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
+                                                }
+
+                                                #endregion
+
+                                                #region Valida la forma de envio, si es 11 genera el PDF y retorna confirmacion de la generacion del PDF
+
+                                                if (sFormaEnvio == "11")
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: Generando PDF, por favor espere ...");
+
+                                                    FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
+
+                                                    if (ValidacionPDF.Exists)
+                                                    {
+                                                        GeneroPDF = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
+                                                    }
+
+                                                }
+
+                                                #endregion
+
+                                                #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
+
+                                                if (GeneroPDF == true)
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
+
+                                                    if (_TipoDocumento == "FacturaDeClientes")
+                                                    {
+                                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                    }
+                                                    else if (_TipoDocumento == "NotaCreditoClientes")
+                                                    {
+                                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                    }
+
+                                                    #region Envia el PDF al proveedor tecnologico TFHKA
+
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
+
+                                                    EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+
+                                                    #endregion
+
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
+
+                                                }
+                                                else
+                                                {
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Actualizando campos, por favor espere ...");
+
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, null);
+
+                                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision Finalizado ...");
+                                                }
+
+                                                #endregion
+
+                                                #region Se descarga el XML y se adjunta a la factura de venta
+
+                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
+
+                                                #region Descarga el XML y retorna la confirmacion
+
+                                                bool DescargoXML = false;
+
+                                                DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
+
+                                                #endregion
+
+                                                #region Actualiza el campo de XML en el documento de SAP
+
+                                                if (DescargoXML == true)
+                                                {
+
+                                                    if (_TipoDocumento == "FacturaDeClientes")
+                                                    {
+                                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+
+                                                    }
+                                                    else if (_TipoDocumento == "NotaCreditoClientes")
+                                                    {
+                                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
+                                                    }
+
+                                                }
+                                                else
+                                                {
+
+                                                }
+
+                                                #endregion
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento autorizado por la DIAN");
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+
+                                                DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documentos autorizado por la DIAN");
+
+                                                _sboapp.ActivateMenuItem("1304");
+
+                                                #endregion
+                                            }
+
+                                        }
+
+
+                                        #endregion
+                                    }
+                                    else
+                                    {
+                                        DllFunciones.sendMessageBox(_sboapp, "Error Paso 1: No se encontraron facturas para enviar");
+                                    }
+
+                                }
+                                #endregion
+
+                                #endregion
                             }
                             else
                             {
-                                #region Respuesta el Web Service de TFHKA y actualizacion de los campos en la factura
+                                #region Si el estado del documento es != 200, envia el documento a la DIAN
 
-                                RespuestaDoc = serviceClient.Enviar(sLlave, sPassword, Documento, sFormaEnvio);
-
-                                if (RespuestaDoc.codigo == 200)
-                                {
-                                    #region Procesa la repuesta
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: " + sNombreDocWarning + " enviada correctamente a TFHKA");
-
-                                    #region Se actualiza el documento en SAP con las respuesta de TFHKA
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
-
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
-
-                                    }
-
-                                    #endregion
-
-                                    #region Valida la forma de envio,si es 11,  genera el PDF y retorna confirmacion de la generacion del PDF
-
-                                    if (sFormaEnvio == "11")
-                                    {
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Generando PDF, por favor espere ...");
-
-                                        FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
-
-                                        if (ValidacionPDF.Exists)
-                                        {
-                                            GeneroPDF = true;
-                                        }
-                                        else
-                                        {
-                                            GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
-                                        }
-                                    }
-
-                                    #endregion
-
-                                    #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
-
-                                    if (GeneroPDF == true)
-                                    {
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF, por favor espere ...");
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                    }
-
-                                    #endregion
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
-
-                                    #region Envia el PDF al proveedor tecnologico TFHKA
-
-                                    sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-
-                                    EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
-
-                                    #endregion
-
-                                    #region Se descarga el XML y se adjunta a la factura de venta
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
-
-                                    #region Descarga el XML y retorna la confirmacion
-
-                                    bool DescargoXML = false;
-
-                                    DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
-
-                                    #endregion
-
-                                    #region Actualiza el campo de XML en el documento de SAP
-
-                                    if (DescargoXML == true)
-                                    {
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
-
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                        }
-
-                                    }
-                                    else
-                                    {
-
-                                    }
-
-                                    #endregion
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-
-
-                                    DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-
-
-                                    #endregion
-                                }
-                                else if (RespuestaDoc.codigo == 201)
-                                {
-                                    #region Procesa la respuesta                             
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: " + sNombreDocWarning + " enviada correctamente a TFHKA");
-
-                                    #region Consulta el estado del documento en TFHKA
-
-                                    sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-                                    DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
-
-                                    #endregion
-
-                                    #region Actualiza el documento con la respuesta de TFHKA
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                        //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                        //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
-                                    }
-                                    #endregion
-
-                                    if (resp.codigo == 200)
-                                    {
-                                        #region Valida la forma de envio,si es 11,  genera el PDF y retorna confirmacion de la generacion del PDF
-
-                                        if (sFormaEnvio == "11")
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Generando PDF, por favor espere ...");
-
-                                            FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
-
-                                            if (ValidacionPDF.Exists)
-                                            {
-                                                GeneroPDF = true;
-                                            }
-                                            else
-                                            {
-                                                GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision finalizado con exito.");
-                                        }
-
-                                        DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
-
-                                        #endregion
-                                    }
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-                                }
-                                else if (RespuestaDoc.codigo == 101)
-                                {
-                                    #region Procesa la respuesta
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje, "", "", null, null);
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje, "", "", null, null);
-                                    }
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-                                }
-                                else if (RespuestaDoc.codigo == 99)
-                                {
-                                    #region Procesa la respuesta
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
-                                    }
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.reglasValidacionDIAN.ToString());
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-                                }
-
-                                else if (RespuestaDoc.codigo == 109)
-                                {
-                                    #region Procesa la respuesta
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensaje.ToString()), "", "", null, null);
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensaje.ToString()), "", "", null, null);
-                                    }
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + " " + RespuestaDoc.mensajesValidacion.GetValue(0));
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-                                }
-                                else if (RespuestaDoc.codigo == 110)
-                                {
-                                    #region Procesa la respuesta
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes")) if (_TipoDocumento == "FacturaDeClientes")
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ", "", "", null, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ", "", "", null, null);
-                                        }
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ");
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-                                }
-                                else if (RespuestaDoc.codigo == 111)
-                                {
-                                    #region Procesa la respuesta
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                    }
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-
-                                }
-                                else if (RespuestaDoc.codigo == 112)
-                                {
-                                    #region Procesa la respuesta
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                    }
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-                                }
-                                else if (RespuestaDoc.codigo == 150)
-                                {
-                                    #region Procesa la respuesta
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
-
-                                    #endregion
-                                }
-                                else if (RespuestaDoc.codigo == 114)
-                                {
-                                    #region Procesa la respuesta
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Consultando el estado del documento a TFHKA, por favor espere ...");
-
-                                    #region Consulta el estado del documento en el proveedor tecnologico
-
-                                    sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-                                    DocumentStatusResponse resp = new eBilling.ServicioEmisionFE.DocumentStatusResponse();
-                                    resp = serviceClient.EstadoDocumento(sLlave, sPassword, sPrefijoConDoc);
-
-                                    #endregion
-
-                                    #region Se actualiza la factura con las respuesta de TFHKA
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                        //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                        //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
-                                    }
-
-                                    #endregion
-
-                                    #region Valida la forma de envio, si es 11 genera el PDF y retorna confirmacion de la generacion del PDF
-
-                                    if (sFormaEnvio == "11")
-                                    {
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: Generando PDF, por favor espere ...");
-
-                                        FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
-
-                                        if (ValidacionPDF.Exists)
-                                        {
-                                            GeneroPDF = true;
-                                        }
-                                        else
-                                        {
-                                            GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
-                                        }
-
-                                    }
-
-                                    #endregion
-
-                                    #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
-
-                                    if (GeneroPDF == true)
-                                    {
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, null, resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, null, resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
-                                        }
-
-                                        #region Envia el PDF al proveedor tecnologico TFHKA
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
-
-                                        EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
-
-                                        #endregion
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
-
-                                    }
-                                    else
-                                    {
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Actualizando campos, por favor espere ...");
-
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, null);
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision Finalizado ...");
-                                    }
-
-                                    #endregion
-
-                                    #region Se descarga el XML y se adjunta a la factura de venta
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
-
-                                    #region Descarga el XML y retorna la confirmacion
-
-                                    bool DescargoXML = false;
-
-                                    DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, sLlave, sPassword, sRutaXML);
-
-                                    #endregion
-
-                                    #region Actualiza el campo de XML en el documento de SAP
-
-                                    if (DescargoXML == true)
-                                    {
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
-
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
-                                        }
-
-                                    }
-                                    else
-                                    {
-
-                                    }
-
-                                    #endregion
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
-
-                                    #endregion
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-                                }
-                                else if (RespuestaDoc.codigo == 1)
-                                {
-                                    #region Procesa la respuesta
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Consultando el estado del documento a TFHKA, por favor espere ...");
-
-                                    #region Consulta el estado del documento en el proveedor tecnologico
-
-                                    sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-                                    DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
-
-                                    #endregion
-
-                                    #region Se actualiza la factura con las respuesta de TFHKA
-
-                                    if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                    {
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                        //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
-                                    }
-                                    else if (_TipoDocumento == "NotaCreditoClientes")
-                                    {
-                                        UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                        //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
-                                    }
-
-                                    #endregion
-
-                                    #region Valida la forma de envio, si es 11 genera el PDF y retorna confirmacion de la generacion del PDF
-
-                                    if (sFormaEnvio == "11")
-                                    {
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: Generando PDF, por favor espere ...");
-
-                                        FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
-
-                                        if (ValidacionPDF.Exists)
-                                        {
-                                            GeneroPDF = true;
-                                        }
-                                        else
-                                        {
-                                            GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
-                                        }
-
-                                    }
-
-                                    #endregion
-
-                                    #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
-
-                                    if (GeneroPDF == true)
-                                    {
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
-
-                                        if (_TipoDocumento == "FacturaDeClientes")
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
-                                        }
-
-                                        #region Envia el PDF al proveedor tecnologico TFHKA
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
-
-                                        EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
-
-                                        #endregion
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
-
-                                    }
-                                    else
-                                    {
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Actualizando campos, por favor espere ...");
-
-                                        UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, null);
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision Finalizado ...");
-                                    }
-
-                                    #endregion
-
-                                    #region Se descarga el XML y se adjunta a la factura de venta
-
-                                    DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
-
-                                    #region Descarga el XML y retorna la confirmacion
-
-                                    bool DescargoXML = false;
-
-                                    DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
-
-                                    #endregion
-
-                                    #region Actualiza el campo de XML en el documento de SAP
-
-                                    if (DescargoXML == true)
-                                    {
-
-                                        if (_TipoDocumento == "FacturaDeClientes")
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
-
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                        }
-
-                                    }
-                                    else
-                                    {
-
-                                    }
-
-                                    #endregion
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento autorizado por la DIAN");
-
-                                    _sboapp.ActivateMenuItem("1304");
-
-                                    #endregion
-
-                                    DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documentos autorizado por la DIAN");
-
-                                    if (sTipoIntegracion == "On")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        _sboapp.ActivateMenuItem("1304");
-                                    }
-
-                                    #endregion
-                                }
-
-                            }
-
-
-                            #endregion
-                        }
-                        else
-                        {
-                            DllFunciones.sendMessageBox(_sboapp, "Error Paso 1: No se encontraron facturas para enviar");
-                        }
-
-
-                        #endregion
-
-                        #endregion
-                    }
-
-                }
-
-                #endregion
-            }
-            else if (TipodeEvento == "ItemEvent")
-            {
-                if (TipoIntegracion == "A")
-                {
-                    if (_oFormInvoices.Mode == BoFormMode.fm_OK_MODE)
-                    {
-                        #region Envio del documento por el Modulo 
-
-                        #region Consulta URL
-
-                        string sGetModo = null;
-                        string sURLEmision = null;
-                        string sURLAdjuntos = null;
-                        string sModo = null;
-                        string sProtocoloComunicacion = null;
-
-                        SAPbobsCOM.Recordset oConsultarGetModo = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-                        sGetModo = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetModoandURL");
-
-                        sGetModo = sGetModo.Replace("%Estado%", "\"U_BO_Status\" = 'Y'").Replace("%DocEntry%", " ");
-
-                        oConsultarGetModo.DoQuery(sGetModo);
-
-                        sURLEmision = Convert.ToString(oConsultarGetModo.Fields.Item("URLTFHKA").Value.ToString()) + "/ws/v1.0/Service.svc?wsdl";
-                        sURLAdjuntos = Convert.ToString(oConsultarGetModo.Fields.Item("URLTFHKA").Value.ToString()) + "/ws/adjuntos/Service.svc?wsdl";
-                        sModo = Convert.ToString(oConsultarGetModo.Fields.Item("Modo").Value.ToString());
-                        sProtocoloComunicacion = Convert.ToString(oConsultarGetModo.Fields.Item("ProtocoloComunicacion").Value.ToString());
-
-                        DllFunciones.liberarObjetos(oConsultarGetModo);
-
-                        #endregion
-
-                        #region Instanciacion parametros TFHKA
-
-                        //Especifica el puerto (HTTP o HTTPS)
-                        if (sProtocoloComunicacion == "HTTP")
-                        {
-                            BasicHttpBinding port = new BasicHttpBinding();
-                        }
-                        else if (sProtocoloComunicacion == "HTTPS")
-                        {
-                            BasicHttpsBinding port = new BasicHttpsBinding();
-                        }
-
-                        port.MaxBufferPoolSize = Int32.MaxValue;
-                        port.MaxBufferSize = Int32.MaxValue;
-                        port.MaxReceivedMessageSize = Int32.MaxValue;
-                        port.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
-                        port.SendTimeout = TimeSpan.FromMinutes(2);
-                        port.ReceiveTimeout = TimeSpan.FromMinutes(2);
-
-                        if (sProtocoloComunicacion == "HTTPS")
-                        {
-                            port.Security.Mode = BasicHttpSecurityMode.Transport;
-                        }
-
-                        //Especifica la dirección de conexion para Emision y Adjuntos 
-                        EndpointAddress endPointEmision = new EndpointAddress(sURLEmision); //URL DEMO EMISION
-                        EndpointAddress endPointAdjuntos = new EndpointAddress(sURLAdjuntos); //URL DEMO ADJUNTOS          
-
-                        #endregion
-
-                        #region Variables
-
-                        string sDocNumInvoice = null;
-                        string sSerieNumeracion = null;
-                        string sQueryDocEntryDocument = null;
-                        string sDocEntryInvoice = null;
-                        string sProcedureXML = null;
-                        string sDocumentoCabecera = null;
-                        string sDocumentoLinea = null;
-                        string sDocumentoImpuestosGenerales = null;
-                        string sDocumentoImpuestosTotales = null;
-                        string sParametrosTFHKA = null;
-                        string sRutaCR = null;
-                        string sPrefijoConDoc = null;
-                        string sPrefijo = null;
-                        string sStatusDoc = null;
-                        string sFormaEnvio = null;
-                        string sLlave = null;
-                        string sPassword = null;
-                        string sUserDB = null;
-                        string sPassDB = null;
-                        string sRutaPDF = null;
-                        string sRutaXML = null;
-                        string sNombreDocumento = null;
-                        string sNombreDocWarning = null;
-                        string sCUFEInvoice = null;
-                        int sReprocesar = 0;
-                        string sGenerarXMLPrueba = null;
-                        string sCountsEmails = null;
-
-                        Boolean GeneroPDF = false;
-
-                        if (_TipoDocumento == "FacturaDeClientes")
-                        {
-                            sNombreDocumento = "Factura_de_Venta_No_";
-                            sNombreDocWarning = "Factura de venta";
-                        }
-                        else if (_TipoDocumento == "NotaCreditoClientes")
-                        {
-                            sNombreDocumento = "Nota_Credito_No_";
-                            sNombreDocWarning = "Nota credito de clientes";
-                        }
-                        else if (_TipoDocumento == "NotaDebitoClientes")
-                        {
-                            sNombreDocumento = "Nota_debito_Clientes_No_";
-                            sNombreDocWarning = "Nota debito de clientes";
-                        }
-
-                        #endregion
-
-                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 1: Consultando " + sNombreDocWarning + " ...");
-
-                        #region Consulta de documento en la base de datos y el estado del documento
-
-                        sDocNumInvoice = ((SAPbouiCOM.EditText)(_oFormInvoices.Items.Item("8").Specific)).Value.ToString();
-                        SAPbouiCOM.ComboBox cbSerieNumeracion = (SAPbouiCOM.ComboBox)(_oFormInvoices.Items.Item("88").Specific);
-                        sSerieNumeracion = cbSerieNumeracion.Selected.Value;
-
-                        SAPbobsCOM.Recordset oConsultaDocEntry = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-                        sQueryDocEntryDocument = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetDocEntryAndParameters");
-
-                        if (_TipoDocumento == "FacturaDeClientes")
-                        {
-                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "OINV").Replace("%DocSubType%", "--");
-                        }
-                        else if (_TipoDocumento == "NotaCreditoClientes")
-                        {
-                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "ORIN").Replace("%DocSubType%", "--");
-                        }
-                        else if (_TipoDocumento == "NotaDebitoClientes")
-                        {
-                            sQueryDocEntryDocument = sQueryDocEntryDocument.Replace("%sDocNumInvoice%", sDocNumInvoice).Replace("%sSerieNumeracion%", sSerieNumeracion).Replace("%Tabla%", "OINV").Replace("%DocSubType%", "DN");
-                        }
-
-                        oConsultaDocEntry.DoQuery(sQueryDocEntryDocument);
-
-                        sPrefijo = Convert.ToString(oConsultaDocEntry.Fields.Item("PrefijoDes").Value.ToString());
-                        sStatusDoc = Convert.ToString(oConsultaDocEntry.Fields.Item("CRWS").Value.ToString());
-                        sFormaEnvio = Convert.ToString(oConsultaDocEntry.Fields.Item("FormaEnvio").Value.ToString());
-                        sLlave = Convert.ToString(oConsultaDocEntry.Fields.Item("Llave").Value.ToString());
-                        sPassword = Convert.ToString(oConsultaDocEntry.Fields.Item("Password").Value.ToString());
-                        sUserDB = Convert.ToString(oConsultaDocEntry.Fields.Item("UserDB").Value.ToString());
-                        sPassDB = Convert.ToString(oConsultaDocEntry.Fields.Item("PassDB").Value.ToString());
-                        sRutaXML = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaXML").Value.ToString()) + "\\" + sNombreDocumento + sPrefijo + '_' + sDocNumInvoice + ".txt";
-                        sRutaPDF = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaPDF").Value.ToString()) + "\\" + sNombreDocumento + sPrefijo + '_' + sDocNumInvoice + ".pdf";
-                        sRutaCR = Convert.ToString(oConsultaDocEntry.Fields.Item("RutaCR").Value.ToString());
-                        sGenerarXMLPrueba = Convert.ToString(oConsultaDocEntry.Fields.Item("GeneraXMLP").Value.ToString());
-                        sCountsEmails = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "CountsEmails");
-
-                        #endregion
-
-                        if (sStatusDoc == "200")
-                        {
-                            #region Si el estado del documento es 200 Pregunta al usuario si desea volver aenviar la factura a la DIAN, 
-
-                            sReprocesar = DllFunciones.sendMessageBoxY_N(_sboapp, "La " + sNombreDocWarning + " ya fue emitida a la DIAN, ¿ Desea volver a enviarla ?");
-
-                            if (sReprocesar == 1)
-                            {
                                 if (oConsultaDocEntry.RecordCount > 0)
                                 {
 
                                     DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 2: Creando Objeto " + sNombreDocWarning + " ...");
 
-                                    #region Si existe el numero de Documento, busca y crea el objeto factura
+                                    #region Si existe el numero de factura, busca la factura y crea el objeto factura
 
                                     sDocEntryInvoice = oConsultaDocEntry.Fields.Item(0).Value.ToString();
 
@@ -7394,7 +8105,6 @@ namespace eBilling
 
                                     StreamWriter MyFile = new StreamWriter(sRutaXML); //ruta y name del archivo request a almecenar
 
-
                                     #endregion
 
                                     DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 4: Serealizando la " + sNombreDocWarning + " ...");
@@ -7439,7 +8149,7 @@ namespace eBilling
                                     {
                                         #region Respuesta el Web Service de TFHKA y actualizacion de los campos en la factura
 
-                                        RespuestaDoc = serviceClient.Enviar(sLlave, sPassword, Documento, sFormaEnvio);
+                                        RespuestaDoc = serviceClient.Enviar(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), Documento, sFormaEnvio);
 
                                         if (RespuestaDoc.codigo == 200)
                                         {
@@ -7453,13 +8163,11 @@ namespace eBilling
                                             {
                                                 UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
                                                 //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
-
                                             }
                                             else if (_TipoDocumento == "NotaCreditoClientes")
                                             {
                                                 UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
                                                 //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
-
                                             }
 
                                             #endregion
@@ -7490,7 +8198,7 @@ namespace eBilling
                                             {
                                                 DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF, por favor espere ...");
 
-                                                if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                if (_TipoDocumento == "FacturaDeClientes")
                                                 {
                                                     UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
                                                 }
@@ -7498,6 +8206,8 @@ namespace eBilling
                                                 {
                                                     UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
                                                 }
+
+
 
                                             }
                                             else
@@ -7512,7 +8222,7 @@ namespace eBilling
 
                                             sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
 
-                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()));
 
                                             #endregion
 
@@ -7530,24 +8240,17 @@ namespace eBilling
 
                                             #region Actualiza el campo de XML en el documento de SAP
 
+
                                             if (DescargoXML == true)
                                             {
-
-                                                if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
-                                                {
-                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
-
-                                                }
-                                                else if (_TipoDocumento == "NotaCreditoClientes")
-                                                {
-                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                                }
-
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
                                             }
                                             else
                                             {
 
                                             }
+
+
 
                                             #endregion
 
@@ -7556,7 +8259,6 @@ namespace eBilling
                                             _sboapp.ActivateMenuItem("1304");
 
                                             #endregion
-
 
                                             DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
 
@@ -7659,7 +8361,7 @@ namespace eBilling
                                                 UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
                                             }
 
-                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.reglasValidacionDIAN.ToString());
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + " , " + Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)));
 
                                             _sboapp.ActivateMenuItem("1304");
 
@@ -7747,7 +8449,18 @@ namespace eBilling
                                         {
                                             #region Procesa la respuesta
 
+                                            if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
+                                            {
+                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                            }
+                                            else if (_TipoDocumento == "NotaCreditoClientes")
+                                            {
+                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
+                                            }
+
                                             DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
+
+                                            _sboapp.ActivateMenuItem("1304");
 
                                             #endregion
                                         }
@@ -7760,8 +8473,7 @@ namespace eBilling
                                             #region Consulta el estado del documento en el proveedor tecnologico
 
                                             sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-                                            DocumentStatusResponse resp = new eBilling.ServicioEmisionFE.DocumentStatusResponse();
-                                            resp = serviceClient.EstadoDocumento(sLlave, sPassword, sPrefijoConDoc);
+                                            DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
 
                                             #endregion
 
@@ -7807,13 +8519,13 @@ namespace eBilling
                                             {
                                                 DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
 
-                                                if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                if (_TipoDocumento == "FacturaDeClientes")
                                                 {
-                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, null, resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                    UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
                                                 }
                                                 else if (_TipoDocumento == "NotaCreditoClientes")
                                                 {
-                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, null, resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
                                                 }
 
                                                 #region Envia el PDF al proveedor tecnologico TFHKA
@@ -7846,7 +8558,7 @@ namespace eBilling
 
                                             bool DescargoXML = false;
 
-                                            DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, sLlave, sPassword, sRutaXML);
+                                            DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
 
                                             #endregion
 
@@ -7855,14 +8567,14 @@ namespace eBilling
                                             if (DescargoXML == true)
                                             {
 
-                                                if (_TipoDocumento == "FacturaDeClientes" || _TipoDocumento == "NotaDebitoClientes")
+                                                if (_TipoDocumento == "FacturaDeClientes")
                                                 {
                                                     UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
 
                                                 }
                                                 else if (_TipoDocumento == "NotaCreditoClientes")
                                                 {
-                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
+                                                    UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
                                                 }
 
                                             }
@@ -7873,11 +8585,15 @@ namespace eBilling
 
                                             #endregion
 
-                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento autorizado por la DIAN");
 
                                             _sboapp.ActivateMenuItem("1304");
 
                                             #endregion
+
+                                            DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documentos autorizado por la DIAN");
+
+                                            _sboapp.ActivateMenuItem("1304");
 
                                             #endregion
                                         }
@@ -8015,8 +8731,8 @@ namespace eBilling
                                             #endregion
                                         }
 
+                                        #endregion
                                     }
-
 
                                     #endregion
                                 }
@@ -8025,727 +8741,19 @@ namespace eBilling
                                     DllFunciones.sendMessageBox(_sboapp, "Error Paso 1: No se encontraron facturas para enviar");
                                 }
 
+                                #endregion
                             }
-                            #endregion
 
                             #endregion
+
                         }
-                        else
-                        {
-                            #region Si el estado del documento es != 200, envia el documento a la DIAN
-
-                            if (oConsultaDocEntry.RecordCount > 0)
-                            {
-
-                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 2: Creando Objeto " + sNombreDocWarning + " ...");
-
-                                #region Si existe el numero de factura, busca la factura y crea el objeto factura
-
-                                sDocEntryInvoice = oConsultaDocEntry.Fields.Item(0).Value.ToString();
-
-                                SAPbobsCOM.Recordset oCabeceraDocumento = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                                SAPbobsCOM.Recordset oLineasDocumento = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                                SAPbobsCOM.Recordset oImpuestosGenerales = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                                SAPbobsCOM.Recordset oImpuestosTotales = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                                SAPbobsCOM.Recordset oCUFEInvoice = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-                                sProcedureXML = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "ExecProcedureBOFacturaXML");
-
-                                if (_TipoDocumento == "FacturaDeClientes")
-                                {
-                                    sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Encabezado");
-                                    sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Lineas");
-                                    sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "Impuestos");
-                                    sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13").Replace("%TipoConsulta%", "ImpuestosTotales");
-                                }
-                                else if (_TipoDocumento == "NotaCreditoClientes")
-                                {
-                                    sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Encabezado");
-                                    sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Lineas");
-                                    sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "Impuestos");
-                                    sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "14").Replace("%TipoConsulta%", "ImpuestosTotales");
-                                }
-                                else if (_TipoDocumento == "NotaDebitoClientes")
-                                {
-                                    sDocumentoCabecera = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Encabezado");
-                                    sDocumentoLinea = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Lineas");
-                                    sDocumentoImpuestosGenerales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "Impuestos");
-                                    sDocumentoImpuestosTotales = sProcedureXML.Replace("%DocEntry%", sDocEntryInvoice).Replace("%ObjecType%", "13_ND").Replace("%TipoConsulta%", "ImpuestosTotales");
-                                }
-
-                                oCabeceraDocumento.DoQuery(sDocumentoCabecera);
-                                oLineasDocumento.DoQuery(sDocumentoLinea);
-                                oImpuestosGenerales.DoQuery(sDocumentoImpuestosGenerales);
-                                oImpuestosTotales.DoQuery(sDocumentoImpuestosTotales);
-
-                                if (_TipoDocumento == "NotaCreditoClientes")
-                                {
-                                    sCUFEInvoice = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetCUFEInvoice");
-                                    sCUFEInvoice = sCUFEInvoice.Replace("%DocNum%", Convert.ToString(oCabeceraDocumento.Fields.Item("No_FV").Value.ToString()));
-
-                                    oCUFEInvoice.DoQuery(sCUFEInvoice);
-                                }
-                                else if (_TipoDocumento == "NotaDebitoClientes")
-                                {
-                                    sCUFEInvoice = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetCUFEDebitNote");
-                                    sCUFEInvoice = sCUFEInvoice.Replace("%DocNum%", Convert.ToString(oCabeceraDocumento.Fields.Item("No_FV").Value.ToString()));
-
-                                    oCUFEInvoice.DoQuery(sCUFEInvoice);
-
-                                }
-                                FacturaGeneral Documento = oBuillInvoice(oCabeceraDocumento, oLineasDocumento, oImpuestosGenerales, oImpuestosTotales, oCUFEInvoice, _TipoDocumento);
-
-                                #endregion
-
-                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 3: Guardando TXT " + sNombreDocWarning + " ...");
-
-                                #region Guarda el TXT en la ruta del XML configurada
-
-                                StreamWriter MyFile = new StreamWriter(sRutaXML); //ruta y name del archivo request a almecenar
-
-                                #endregion
-
-                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 4: Serealizando la " + sNombreDocWarning + " ...");
-
-                                #region Serealizando el documento
-
-                                SAPbobsCOM.Recordset oParametrosTFHKA = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-                                sParametrosTFHKA = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "GetParameterstoSend");
-
-                                oParametrosTFHKA.DoQuery(sParametrosTFHKA);
-
-                                XmlSerializer Serializer1 = new XmlSerializer(typeof(FacturaGeneral));
-                                Serializer1.Serialize(MyFile, Documento); // Objeto serializado
-                                MyFile.Close();
-
-                                if (sGenerarXMLPrueba == "N")
-                                {
-                                    File.Delete(sRutaXML);
-                                }
-
-                                #endregion
-
-                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Enviando " + sNombreDocWarning + " a TFHKA...");
-
-                                #region Envio del objeto factura a TFHKA
-
-                                serviceClient = new eBilling.ServicioEmisionFE.ServiceClient(port, endPointEmision);
-                                serviceClientAdjuntos = new eBilling.ServicioAdjuntosFE.ServiceClient(port, endPointAdjuntos);
-
-                                DocumentResponse RespuestaDoc = new eBilling.ServicioEmisionFE.DocumentResponse(); //objeto Response del metodo enviar
-
-                                if (string.IsNullOrEmpty(sLlave))
-                                {
-                                    DllFunciones.sendMessageBox(_sboapp, "Error Paso 4: No se ha parametrizado la llave de TFHKA en la configuracion Inicial, por lo cual no se puede enviar la factura a la DIAN ");
-                                }
-                                else if (string.IsNullOrEmpty(sPassword))
-                                {
-                                    DllFunciones.sendMessageBox(_sboapp, "Error Paso 4: No se ha parametrizado el password de TFHKA en la configuracion Inicial, por lo cual no se puede enviar la factura a la DIAN");
-                                }
-                                else
-                                {
-                                    #region Respuesta el Web Service de TFHKA y actualizacion de los campos en la factura
-
-                                    RespuestaDoc = serviceClient.Enviar(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), Documento, sFormaEnvio);
-
-                                    if (RespuestaDoc.codigo == 200)
-                                    {
-                                        #region Procesa la repuesta
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: " + sNombreDocWarning + " enviada correctamente a TFHKA");
-
-                                        #region Se actualiza el documento en SAP con las respuesta de TFHKA
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
-                                            //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, "Documento autorizado por la DIAN", RespuestaDoc.cufe, RespuestaDoc.qr, null, null);
-                                            //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
-                                        }
-
-                                        #endregion
-
-                                        #region Valida la forma de envio,si es 11,  genera el PDF y retorna confirmacion de la generacion del PDF
-
-                                        if (sFormaEnvio == "11")
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Generando PDF, por favor espere ...");
-
-                                            FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
-
-                                            if (ValidacionPDF.Exists)
-                                            {
-                                                GeneroPDF = true;
-                                            }
-                                            else
-                                            {
-                                                GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
-                                            }
-                                        }
-
-                                        #endregion
-
-                                        #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
-
-                                        if (GeneroPDF == true)
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF, por favor espere ...");
-
-                                            if (_TipoDocumento == "FacturaDeClientes")
-                                            {
-                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                            }
-                                            else if (_TipoDocumento == "NotaCreditoClientes")
-                                            {
-                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                            }
-
-
-
-                                        }
-                                        else
-                                        {
-                                        }
-
-                                        #endregion
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
-
-                                        #region Envia el PDF al proveedor tecnologico TFHKA
-
-                                        sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-
-                                        EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()));
-
-                                        #endregion
-
-                                        #region Se descarga el XML y se adjunta a la factura de venta
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
-
-                                        #region Descarga el XML y retorna la confirmacion
-
-                                        bool DescargoXML = false;
-
-                                        DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
-
-                                        #endregion
-
-                                        #region Actualiza el campo de XML en el documento de SAP
-
-
-                                        if (DescargoXML == true)
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
-                                        }
-                                        else
-                                        {
-
-                                        }
-
-
-
-                                        #endregion
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento enviado correctamente");
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-
-                                        DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-                                    else if (RespuestaDoc.codigo == 201)
-                                    {
-                                        #region Procesa la respuesta                             
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: " + sNombreDocWarning + " enviada correctamente a TFHKA");
-
-                                        #region Consulta el estado del documento en TFHKA
-
-                                        sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-                                        DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
-
-                                        #endregion
-
-                                        #region Actualiza el documento con la respuesta de TFHKA
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                            //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                            //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
-                                        }
-                                        #endregion
-
-                                        if (resp.codigo == 200)
-                                        {
-                                            #region Valida la forma de envio,si es 11,  genera el PDF y retorna confirmacion de la generacion del PDF
-
-                                            if (sFormaEnvio == "11")
-                                            {
-                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Generando PDF, por favor espere ...");
-
-                                                FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
-
-                                                if (ValidacionPDF.Exists)
-                                                {
-                                                    GeneroPDF = true;
-                                                }
-                                                else
-                                                {
-                                                    GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision finalizado con exito.");
-                                            }
-
-                                            DllFunciones.sendMessageBox(_sboapp, "El documento fue enviado existosamente a la DIAN");
-
-                                            #endregion
-                                        }
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-                                    else if (RespuestaDoc.codigo == 101)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje, "", "", null, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje, "", "", null, null);
-                                        }
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-                                    else if (RespuestaDoc.codigo == 99)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)), "", "", null, null);
-                                        }
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + " , " + Convert.ToString(RespuestaDoc.reglasValidacionDIAN.GetValue(0)));
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-
-                                    else if (RespuestaDoc.codigo == 109)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensajesValidacion.GetValue(0)), "", "", null, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, Convert.ToString(RespuestaDoc.mensajesValidacion.GetValue(0)), "", "", null, null);
-                                        }
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + " " + RespuestaDoc.mensajesValidacion.GetValue(0));
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-                                    else if (RespuestaDoc.codigo == 110)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes")) if (_TipoDocumento == "FacturaDeClientes")
-                                            {
-                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ", "", "", null, null);
-                                            }
-                                            else if (_TipoDocumento == "NotaCreditoClientes")
-                                            {
-                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ", "", "", null, null);
-                                            }
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString() + ", Total de Factura es diferente de la suma de Total valor bruto + Tributos - Total Tributo Retenidos - Anticipos ");
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-                                    else if (RespuestaDoc.codigo == 111)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                        }
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-
-                                    }
-                                    else if (RespuestaDoc.codigo == 112)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                        }
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-                                    else if (RespuestaDoc.codigo == 150)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, RespuestaDoc.codigo, RespuestaDoc.mensaje.ToString(), "", "", null, null);
-                                        }
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de error No. " + RespuestaDoc.codigo.ToString() + ", " + RespuestaDoc.mensaje.ToString());
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-                                    else if (RespuestaDoc.codigo == 114)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Consultando el estado del documento a TFHKA, por favor espere ...");
-
-                                        #region Consulta el estado del documento en el proveedor tecnologico
-
-                                        sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-                                        DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
-
-                                        #endregion
-
-                                        #region Se actualiza la factura con las respuesta de TFHKA
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                            //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                            //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
-                                        }
-
-                                        #endregion
-
-                                        #region Valida la forma de envio, si es 11 genera el PDF y retorna confirmacion de la generacion del PDF
-
-                                        if (sFormaEnvio == "11")
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: Generando PDF, por favor espere ...");
-
-                                            FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
-
-                                            if (ValidacionPDF.Exists)
-                                            {
-                                                GeneroPDF = true;
-                                            }
-                                            else
-                                            {
-                                                GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
-                                            }
-
-                                        }
-
-                                        #endregion
-
-                                        #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
-
-                                        if (GeneroPDF == true)
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
-
-                                            if (_TipoDocumento == "FacturaDeClientes")
-                                            {
-                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
-                                            }
-                                            else if (_TipoDocumento == "NotaCreditoClientes")
-                                            {
-                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
-                                            }
-
-                                            #region Envia el PDF al proveedor tecnologico TFHKA
-
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
-
-                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
-
-                                            #endregion
-
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
-
-                                        }
-                                        else
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Actualizando campos, por favor espere ...");
-
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, null);
-
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision Finalizado ...");
-                                        }
-
-                                        #endregion
-
-                                        #region Se descarga el XML y se adjunta a la factura de venta
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
-
-                                        #region Descarga el XML y retorna la confirmacion
-
-                                        bool DescargoXML = false;
-
-                                        DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
-
-                                        #endregion
-
-                                        #region Actualiza el campo de XML en el documento de SAP
-
-                                        if (DescargoXML == true)
-                                        {
-
-                                            if (_TipoDocumento == "FacturaDeClientes")
-                                            {
-                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
-
-                                            }
-                                            else if (_TipoDocumento == "NotaCreditoClientes")
-                                            {
-                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                            }
-
-                                        }
-                                        else
-                                        {
-
-                                        }
-
-                                        #endregion
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento autorizado por la DIAN");
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documentos autorizado por la DIAN");
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-                                    else if (RespuestaDoc.codigo == 1)
-                                    {
-                                        #region Procesa la respuesta
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 5: Consultando el estado del documento a TFHKA, por favor espere ...");
-
-                                        #region Consulta el estado del documento en el proveedor tecnologico
-
-                                        sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
-                                        DocumentStatusResponse resp = serviceClient.EstadoDocumento(Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sPrefijoConDoc);
-
-                                        #endregion
-
-                                        #region Se actualiza la factura con las respuesta de TFHKA
-
-                                        if (_TipoDocumento == "FacturaDeClientes" || (_TipoDocumento == "NotaDebitoClientes"))
-                                        {
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                            //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "13");
-                                        }
-                                        else if (_TipoDocumento == "NotaCreditoClientes")
-                                        {
-                                            UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, null, null);
-                                            //InsertSendEmail(_oCompany, oCabeceraDocumento, sCountsEmails, sDocEntryInvoice, "14");
-                                        }
-
-                                        #endregion
-
-                                        #region Valida la forma de envio, si es 11 genera el PDF y retorna confirmacion de la generacion del PDF
-
-                                        if (sFormaEnvio == "11")
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 6: Generando PDF, por favor espere ...");
-
-                                            FileInfo ValidacionPDF = new FileInfo(sRutaPDF);
-
-                                            if (ValidacionPDF.Exists)
-                                            {
-                                                GeneroPDF = true;
-                                            }
-                                            else
-                                            {
-                                                GeneroPDF = ExportPDF(_sboapp, _oCompany, sRutaPDF, sDocEntryInvoice, sRutaCR, _TipoDocumento, sUserDB, sPassDB);
-                                            }
-
-                                        }
-
-                                        #endregion
-
-                                        #region Si genera correctamente el PDF lo adjunta a la factura de venta en SAP, 
-
-                                        if (GeneroPDF == true)
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando PDF y actualizando campos, por favor espere ...");
-
-                                            if (_TipoDocumento == "FacturaDeClientes")
-                                            {
-                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
-                                            }
-                                            else if (_TipoDocumento == "NotaCreditoClientes")
-                                            {
-                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, resp.codigo, "Documento autorizado por la DIAN", resp.cufe, resp.cadenaCodigoQR, sRutaPDF, null);
-                                            }
-
-                                            #region Envia el PDF al proveedor tecnologico TFHKA
-
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
-
-                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
-
-                                            #endregion
-
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 9: Proceso de emision Finalizado ...");
-
-                                        }
-                                        else
-                                        {
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Actualizando campos, por favor espere ...");
-
-                                            UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, null);
-
-                                            DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Proceso de emision Finalizado ...");
-                                        }
-
-                                        #endregion
-
-                                        #region Se descarga el XML y se adjunta a la factura de venta
-
-                                        DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 7: Adjuntando XML y actualizando campos, por favor espere ...");
-
-                                        #region Descarga el XML y retorna la confirmacion
-
-                                        bool DescargoXML = false;
-
-                                        DescargoXML = DescargaXML(_oCompany, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()), sRutaXML);
-
-                                        #endregion
-
-                                        #region Actualiza el campo de XML en el documento de SAP
-
-                                        if (DescargoXML == true)
-                                        {
-
-                                            if (_TipoDocumento == "FacturaDeClientes")
-                                            {
-                                                UpdateoInvoice(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, null, sRutaXML.Replace(".txt", ".xml"));
-
-                                            }
-                                            else if (_TipoDocumento == "NotaCreditoClientes")
-                                            {
-                                                UpdateoCreditNote(_oCompany, _sboapp, sDocEntryInvoice, 0, null, null, null, sRutaPDF, null);
-                                            }
-
-                                        }
-                                        else
-                                        {
-
-                                        }
-
-                                        #endregion
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documento autorizado por la DIAN");
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-
-                                        DllFunciones.sendMessageBox(_sboapp, "Codigo de mensaje No. " + RespuestaDoc.codigo.ToString() + ", " + "Documentos autorizado por la DIAN");
-
-                                        _sboapp.ActivateMenuItem("1304");
-
-                                        #endregion
-                                    }
-
-                                    #endregion
-                                }
-
-                                #endregion
-                            }
-                            else
-                            {
-                                DllFunciones.sendMessageBox(_sboapp, "Error Paso 1: No se encontraron facturas para enviar");
-                            }
-
-                            #endregion
-                        }
-
-                        #endregion
-
                     }
                 }
+            }
+            catch (Exception)
+            {
+
+
             }
         }
 
