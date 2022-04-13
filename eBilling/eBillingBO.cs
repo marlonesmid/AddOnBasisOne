@@ -2513,7 +2513,9 @@ namespace eBilling
 
             int CantidadArticulos;
             int SecuenciaArreglo;
+            int SecuenciaArregloImpuesto;
             int Posicion;
+            int PosicionImpuesto;
             CantidadArticulos = oLineas.RecordCount;
 
             #endregion
@@ -2530,6 +2532,9 @@ namespace eBilling
 
                 SecuenciaArreglo = 0;
                 Posicion = SecuenciaArreglo + 1;
+
+                SecuenciaArregloImpuesto = 0;
+                PosicionImpuesto = SecuenciaArregloImpuesto + 1;
 
                 do
                 {
@@ -2596,7 +2601,7 @@ namespace eBilling
 
                     FacturaImpuestos Impuesto = new FacturaImpuestos();
 
-                    #region Detalle Impuesto
+                    #region Detalle Impuesto general articulo
 
                     string sbaseImponibleTOTALImp_Impuesto = Convert.ToString(oLineas.Fields.Item("baseImponibleTOTALImp").Value.ToString());
                     Impuesto.baseImponibleTOTALImp = sbaseImponibleTOTALImp_Impuesto.Replace(",", ".");
@@ -2623,7 +2628,7 @@ namespace eBilling
 
                     ImpuestosTotales ImpuestoTOTAL = new ImpuestosTotales();
 
-                    #region Detalle Impuesto Total
+                    #region Detalle Impuesto Total Linea
 
                     ImpuestoTOTAL.codigoTOTALImp = Convert.ToString(oLineas.Fields.Item("codigoTOTALImp").Value.ToString());
 
@@ -2861,7 +2866,7 @@ namespace eBilling
 
             #endregion
 
-            #region Informcion Adicional
+            #region Informacion Adicional Muestras 
 
             if (Convert.ToString(oCabecera.Fields.Item("FacturaTieneMuestras").Value.ToString()) == "SI")
             {
@@ -2870,6 +2875,23 @@ namespace eBilling
                 txtInformacionAdicional[0] = "El total de la Factura a cobrar corresponde a los items registrado sin considerar la muestra gratis";
 
                 FacturadeVenta.informacionAdicional = txtInformacionAdicional;
+            }
+
+            #endregion
+
+            #region Informacion Adicional Comentarios  
+
+            if (string.IsNullOrEmpty(oCabecera.Fields.Item("Comentarios").Value.ToString()))
+            {
+
+            }
+            else
+            {
+                string[] txtInformacionAdicionalComentarios = new string[1];
+
+                txtInformacionAdicionalComentarios[0] = oCabecera.Fields.Item("Comentarios").Value.ToString();
+
+                FacturadeVenta.informacionAdicional = txtInformacionAdicionalComentarios;
             }
 
             #endregion
@@ -3973,7 +3995,7 @@ namespace eBilling
 
                 IDFormattedSearchKey = 0;
 
-                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("UDO_FT_BO_eBillingP", "txtAC", oCompany, sboapp);
+                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("eBilling","UDO_FT_BO_eBillingP", "txtAC", oCompany, sboapp);
 
                 if (IDFormattedSearchKey == 0)
                 {
@@ -4025,7 +4047,7 @@ namespace eBilling
 
                 IDFormattedSearchKey = 0;
 
-                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("UDO_FT_BO_eBillingP", "MtxSN", oCompany, sboapp);
+                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("eBilling", "UDO_FT_BO_eBillingP", "MtxSN", oCompany, sboapp);
 
                 if (IDFormattedSearchKey == 0)
                 {
@@ -4077,7 +4099,7 @@ namespace eBilling
 
                 IDFormattedSearchKey = 0;
 
-                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("134", "txtRF", oCompany, sboapp);
+                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("eBilling", "134", "txtRF", oCompany, sboapp);
 
                 if (IDFormattedSearchKey == 0)
                 {
@@ -4128,7 +4150,7 @@ namespace eBilling
 
                 IDFormattedSearchKey = 0;
 
-                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("UDO_FT_BOUNDMED", "txtUMS", oCompany, sboapp);
+                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("eBilling", "UDO_FT_BOUNDMED", "txtUMS", oCompany, sboapp);
 
                 if (IDFormattedSearchKey == 0)
                 {
@@ -4179,7 +4201,7 @@ namespace eBilling
 
                 IDFormattedSearchKey = 0;
 
-                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("UDO_FT_BOUNDMED", "txtUMD", oCompany, sboapp);
+                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("eBilling", "UDO_FT_BOUNDMED", "txtUMD", oCompany, sboapp);
 
                 if (IDFormattedSearchKey == 0)
                 {
@@ -4231,7 +4253,7 @@ namespace eBilling
 
                 IDFormattedSearchKey = 0;
 
-                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("179", "txtAFV", oCompany, sboapp);
+                IDFormattedSearchKey = DllFunciones.GetFormmatedSearchKey("eBilling", "179", "txtAFV", oCompany, sboapp);
 
                 if (IDFormattedSearchKey == 0)
                 {
@@ -4284,9 +4306,9 @@ namespace eBilling
                 //63
                 DllFunciones.ProgressBar(oCompany,sboapp, 77, 1, "Importando archivos CSV, por favor espere...");
 
-                DllFunciones.ImportCSV(sboapp, oCompany, "Tiposresponsabilidades", "eBilling", "GetTableBORESFISCAL", "InsertTipoResponsabilidad");
+                DllFunciones.ImportCSV(sboapp, oCompany, "Tiposresponsabilidades", "eBilling", "GetTableBORESFISCAL", "InsertTipoResponsabilidad", "eBilling");
 
-                DllFunciones.ImportCSV(sboapp, oCompany, "UnidadesdeMedidaDIAN", "eBilling", "GetTableUMDIAN", "InsertUnidadMedidaDIAN");
+                DllFunciones.ImportCSV(sboapp, oCompany, "UnidadesdeMedidaDIAN", "eBilling", "GetTableUMDIAN", "InsertUnidadMedidaDIAN", "eBilling");
 
                 #endregion
 
@@ -5783,7 +5805,7 @@ namespace eBilling
 
                                             sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
 
-                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                            EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                             #endregion
 
@@ -6149,7 +6171,7 @@ namespace eBilling
 
                                                 DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
 
-                                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                                EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                                 #endregion
 
@@ -6285,7 +6307,7 @@ namespace eBilling
 
                                                 DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
 
-                                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                                EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                                 #endregion
 
@@ -6562,7 +6584,7 @@ namespace eBilling
 
                                         sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
 
-                                        EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                        EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                         #endregion
 
@@ -6935,7 +6957,7 @@ namespace eBilling
 
                                             DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
 
-                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                            EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                             #endregion
 
@@ -7071,7 +7093,7 @@ namespace eBilling
 
                                             DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
 
-                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                            EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                             #endregion
 
@@ -7514,7 +7536,7 @@ namespace eBilling
 
                                                 sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
 
-                                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                                EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                                 #endregion
 
@@ -7822,7 +7844,7 @@ namespace eBilling
 
                                                     DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
 
-                                                    EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                                    EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                                     #endregion
 
@@ -7951,7 +7973,7 @@ namespace eBilling
 
                                                     DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
 
-                                                    EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                                    EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                                     #endregion
 
@@ -8222,7 +8244,7 @@ namespace eBilling
 
                                             sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
 
-                                            EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()));
+                                            EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()));
 
                                             #endregion
 
@@ -8532,7 +8554,7 @@ namespace eBilling
 
                                                 DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
 
-                                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                                EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                                 #endregion
 
@@ -8665,7 +8687,7 @@ namespace eBilling
 
                                                 DllFunciones.StatusBar(_sboapp, BoStatusBarMessageType.smt_Success, "Paso 8: Enviando PDF a TFHKA por favor espere ...");
 
-                                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                                EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                                 #endregion
 
@@ -8750,10 +8772,10 @@ namespace eBilling
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-
+                DllFunciones.sendErrorMessage(_sboapp, e);
             }
         }
 
@@ -9089,7 +9111,7 @@ namespace eBilling
 
                                 sPrefijoConDoc = Convert.ToString(oCabeceraDocumento.Fields.Item("Prefijo").Value.ToString()) + sDocNumInvoice;
 
-                                EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()));
+                                EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, Convert.ToString(oParametrosTFHKA.Fields.Item("TokenEmpresa").Value.ToString()), Convert.ToString(oParametrosTFHKA.Fields.Item("TokenPassword").Value.ToString()));
 
                                 #endregion
 
@@ -9338,7 +9360,7 @@ namespace eBilling
 
                                     #region Envia el PDF al proveedor tecnologico TFHKA
 
-                                    EnviarAdjuntosTFHKA(_sboapp, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
+                                    EnviarAdjuntosTFHKA(_sboapp, _oCompany, oCabeceraDocumento, sRutaPDF, sPrefijoConDoc, sLlave, sPassword);
 
                                     #endregion
 
@@ -9411,166 +9433,407 @@ namespace eBilling
             }
         }
 
-        public void EnviarAdjuntosTFHKA(SAPbouiCOM.Application _sboapp, SAPbobsCOM.Recordset oCabecera, string _RutaPDFyXML, string _sPrefijoConDoc, string _tbxTokenEmpresa, string _tbxTokenPassword)
+        public void EnviarAdjuntosTFHKA(SAPbouiCOM.Application _sboapp, SAPbobsCOM.Company _oCompany, SAPbobsCOM.Recordset oCabecera, string _RutaPDFyXML, string _sPrefijoConDoc, string _tbxTokenEmpresa, string _tbxTokenPassword)
         {
+            #region Variables y objetos 
+
             Funciones.Comunes DllFunciones = new Funciones.Comunes();
 
-            int procesados = 0;
+            int iQuantityAttchament = 0;
 
-            for (int i = 0; i < 1; i++)
+            #endregion
+
+            #region cuenta la cantidad de adjuntos diferentes a la representacion grafica
+
+            iQuantityAttchament = Convert.ToInt32(oCabecera.Fields.Item("CantidadAdjuntos").Value.ToString());
+
+            #endregion
+
+            if (iQuantityAttchament == 0)
             {
-                FileInfo file = new FileInfo(_RutaPDFyXML);
+                #region Envia cuando no hay adjuntos
 
-                if (file.Exists)
+                for (int i = 0; i < 1; i++)
                 {
-                    BinaryReader bReader = new BinaryReader(file.OpenRead());
-                    byte[] anexByte = bReader.ReadBytes((int)file.Length);
-                    //anexB64 = Convert.ToBase64String(anexByte);
-                    ServicioAdjuntosFE.CargarAdjuntos uploadAttachment = new ServicioAdjuntosFE.CargarAdjuntos();
-                    uploadAttachment.archivo = anexByte;
-                    uploadAttachment.numeroDocumento = _sPrefijoConDoc;
+                    #region Envia adjuntos
 
-                    #region Revision Correos a Enviar
+                    FileInfo file = new FileInfo(_RutaPDFyXML);
 
-                    #region Variables Correo
-
-                    string CorreoDeEntrega1 = Convert.ToString(oCabecera.Fields.Item("correoEntrega1").Value.ToString());
-                    string CorreoDeEntrega2 = Convert.ToString(oCabecera.Fields.Item("correoEntrega2").Value.ToString());
-                    string CorreoDeEntrega3 = Convert.ToString(oCabecera.Fields.Item("correoEntrega3").Value.ToString());
-                    string CorreoDeEntrega4 = Convert.ToString(oCabecera.Fields.Item("correoEntrega4").Value.ToString());
-                    string CorreoDeEntrega5 = Convert.ToString(oCabecera.Fields.Item("correoEntrega5").Value.ToString());
-
-                    int ContadorCorreos = 0;
-
-                    #endregion
-
-                    #region Contador de los correos a enviar 
-
-                    if (string.IsNullOrEmpty(CorreoDeEntrega1))
+                    if (file.Exists)
                     {
+                        BinaryReader bReader = new BinaryReader(file.OpenRead());
+                        byte[] anexByte = bReader.ReadBytes((int)file.Length);
+                        //anexB64 = Convert.ToBase64String(anexByte);
+                        ServicioAdjuntosFE.CargarAdjuntos uploadAttachment = new ServicioAdjuntosFE.CargarAdjuntos();
+                        uploadAttachment.archivo = anexByte;
+                        uploadAttachment.numeroDocumento = _sPrefijoConDoc;
 
-                    }
-                    else
-                    {
-                        ContadorCorreos++;
-                    }
+                        #region Revision Correos a Enviar
 
-                    if (string.IsNullOrEmpty(CorreoDeEntrega2))
-                    {
+                        #region Variables Correo
 
-                    }
-                    else
-                    {
-                        ContadorCorreos++;
-                    }
+                        string CorreoDeEntrega1 = Convert.ToString(oCabecera.Fields.Item("correoEntrega1").Value.ToString());
+                        string CorreoDeEntrega2 = Convert.ToString(oCabecera.Fields.Item("correoEntrega2").Value.ToString());
+                        string CorreoDeEntrega3 = Convert.ToString(oCabecera.Fields.Item("correoEntrega3").Value.ToString());
+                        string CorreoDeEntrega4 = Convert.ToString(oCabecera.Fields.Item("correoEntrega4").Value.ToString());
+                        string CorreoDeEntrega5 = Convert.ToString(oCabecera.Fields.Item("correoEntrega5").Value.ToString());
 
-                    if (string.IsNullOrEmpty(CorreoDeEntrega3))
-                    {
+                        int ContadorCorreos = 0;
 
-                    }
-                    else
-                    {
-                        ContadorCorreos++;
-                    }
+                        #endregion
 
-                    if (string.IsNullOrEmpty(CorreoDeEntrega4))
-                    {
+                        #region Contador de los correos a enviar 
 
-                    }
-                    else
-                    {
-                        ContadorCorreos++;
-                    }
-
-                    if (string.IsNullOrEmpty(CorreoDeEntrega5))
-                    {
-
-                    }
-                    else
-                    {
-                        ContadorCorreos++;
-                    }
-
-                    #endregion
-
-                    string[] correoEntrega = new string[ContadorCorreos];
-
-                    #region Asignacion de los correos a enviar
-
-                    if (ContadorCorreos == 1)
-                    {
-                        correoEntrega[0] = CorreoDeEntrega1;
-                    }
-                    else if (ContadorCorreos == 2)
-                    {
-                        correoEntrega[0] = CorreoDeEntrega1;
-                        correoEntrega[1] = CorreoDeEntrega2;
-                    }
-                    else if (ContadorCorreos == 3)
-                    {
-                        correoEntrega[0] = CorreoDeEntrega1;
-                        correoEntrega[1] = CorreoDeEntrega2;
-                        correoEntrega[2] = CorreoDeEntrega3;
-                    }
-                    else if (ContadorCorreos == 4)
-                    {
-                        correoEntrega[0] = CorreoDeEntrega1;
-                        correoEntrega[1] = CorreoDeEntrega2;
-                        correoEntrega[2] = CorreoDeEntrega3;
-                        correoEntrega[3] = CorreoDeEntrega4;
-                    }
-                    else if (ContadorCorreos == 5)
-                    {
-                        correoEntrega[0] = CorreoDeEntrega1;
-                        correoEntrega[1] = CorreoDeEntrega2;
-                        correoEntrega[2] = CorreoDeEntrega3;
-                        correoEntrega[3] = CorreoDeEntrega4;
-                        correoEntrega[4] = CorreoDeEntrega5;
-                    }
-
-                    #endregion
-
-                    #endregion
-
-                    uploadAttachment.email = correoEntrega;
-                    uploadAttachment.nombre = file.Name.Substring(0, file.Name.Length - 4);
-                    uploadAttachment.formato = file.Extension.Substring(1);
-                    uploadAttachment.tipo = "1";
-
-                    if (Convert.ToString(oCabecera.Fields.Item("notificar").Value.ToString()) == "NO")
-                    {
-                        uploadAttachment.enviar = "0";
-                    }
-                    else
-                    {
-                        if (i + 1 == 1)
+                        if (string.IsNullOrEmpty(CorreoDeEntrega1))
                         {
-                            uploadAttachment.enviar = "1";
+
                         }
                         else
                         {
+                            ContadorCorreos++;
+                        }
+
+                        if (string.IsNullOrEmpty(CorreoDeEntrega2))
+                        {
+
+                        }
+                        else
+                        {
+                            ContadorCorreos++;
+                        }
+
+                        if (string.IsNullOrEmpty(CorreoDeEntrega3))
+                        {
+
+                        }
+                        else
+                        {
+                            ContadorCorreos++;
+                        }
+
+                        if (string.IsNullOrEmpty(CorreoDeEntrega4))
+                        {
+
+                        }
+                        else
+                        {
+                            ContadorCorreos++;
+                        }
+
+                        if (string.IsNullOrEmpty(CorreoDeEntrega5))
+                        {
+
+                        }
+                        else
+                        {
+                            ContadorCorreos++;
+                        }
+
+                        #endregion
+
+                        string[] correoEntrega = new string[ContadorCorreos];
+
+                        #region Asignacion de los correos a enviar
+
+                        if (ContadorCorreos == 1)
+                        {
+                            correoEntrega[0] = CorreoDeEntrega1;
+                        }
+                        else if (ContadorCorreos == 2)
+                        {
+                            correoEntrega[0] = CorreoDeEntrega1;
+                            correoEntrega[1] = CorreoDeEntrega2;
+                        }
+                        else if (ContadorCorreos == 3)
+                        {
+                            correoEntrega[0] = CorreoDeEntrega1;
+                            correoEntrega[1] = CorreoDeEntrega2;
+                            correoEntrega[2] = CorreoDeEntrega3;
+                        }
+                        else if (ContadorCorreos == 4)
+                        {
+                            correoEntrega[0] = CorreoDeEntrega1;
+                            correoEntrega[1] = CorreoDeEntrega2;
+                            correoEntrega[2] = CorreoDeEntrega3;
+                            correoEntrega[3] = CorreoDeEntrega4;
+                        }
+                        else if (ContadorCorreos == 5)
+                        {
+                            correoEntrega[0] = CorreoDeEntrega1;
+                            correoEntrega[1] = CorreoDeEntrega2;
+                            correoEntrega[2] = CorreoDeEntrega3;
+                            correoEntrega[3] = CorreoDeEntrega4;
+                            correoEntrega[4] = CorreoDeEntrega5;
+                        }
+
+                        #endregion
+
+                        #endregion
+
+                        uploadAttachment.email = correoEntrega;
+                        uploadAttachment.nombre = file.Name.Substring(0, file.Name.Length - 4);
+                        uploadAttachment.formato = file.Extension.Substring(1);
+                        uploadAttachment.tipo = "1";
+
+                        if (Convert.ToString(oCabecera.Fields.Item("notificar").Value.ToString()) == "NO")
+                        {
                             uploadAttachment.enviar = "0";
                         }
+                        else
+                        {
+                            if (i + 1 == 1)
+                            {
+                                uploadAttachment.enviar = "1";
+                            }
+                            else
+                            {
+                                uploadAttachment.enviar = "0";
+                            }
+                        }
+                        ServicioAdjuntosFE.UploadAttachmentResponse fileRespuesta = new ServicioAdjuntosFE.UploadAttachmentResponse();
+                        fileRespuesta = serviceClientAdjuntos.CargarAdjuntos(_tbxTokenEmpresa, _tbxTokenPassword, uploadAttachment);
+                        if (fileRespuesta.codigo == 200)
+                        {
+
+                        }
+                        else
+                        {
+                            DllFunciones.sendMessageBox(_sboapp, " No se cargo correctamente el PDF al portal de TFHKA, " + fileRespuesta.mensaje);
+                        }
                     }
+                    else
+                    {
+                        // no debería entrar a este ciclo
+                    }
+                    #endregion
+                }
 
+                #endregion
+            }
+            else
+            {
 
-                    ServicioAdjuntosFE.UploadAttachmentResponse fileRespuesta = new ServicioAdjuntosFE.UploadAttachmentResponse();
-                    fileRespuesta = serviceClientAdjuntos.CargarAdjuntos(_tbxTokenEmpresa, _tbxTokenPassword, uploadAttachment);
-                    if (fileRespuesta.codigo == 200)
+                #region Variables y objetos
+
+                SAPbobsCOM.Recordset oPathFilesAttachment = (SAPbobsCOM.Recordset)_oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                FileInfo file;
+
+                #endregion
+
+                #region Consulta ruta de los archivos
+
+                string sQryPathFilesAttchment = DllFunciones.GetStringXMLDocument(_oCompany, "eBilling", "eBilling", "PathFilesAttchment");
+
+                sQryPathFilesAttchment = sQryPathFilesAttchment.Replace("%DocEntryAdjuntos%", Convert.ToString(oCabecera.Fields.Item("DocEntryAdjuntos").Value.ToString()));
+                
+                oPathFilesAttachment.DoQuery(sQryPathFilesAttchment);
+
+                #endregion
+
+                oPathFilesAttachment.MoveFirst();
+
+                for (int i = 0; i <= iQuantityAttchament; i++)
+                {
+
+                    #region Envia adjuntos
+
+                        if (i == 0)
+                        {
+                            file = new FileInfo(_RutaPDFyXML);
+                        }
+                        else
+                        {
+                            file = new FileInfo(oPathFilesAttachment.Fields.Item("PathFile").Value.ToString());
+                        }
+
+                        if (file.Exists)
+                        {
+                            BinaryReader bReader = new BinaryReader(file.OpenRead());
+                            byte[] anexByte = bReader.ReadBytes((int)file.Length);
+                            //anexB64 = Convert.ToBase64String(anexByte);
+                            ServicioAdjuntosFE.CargarAdjuntos uploadAttachment = new ServicioAdjuntosFE.CargarAdjuntos();
+                            uploadAttachment.archivo = anexByte;
+                            uploadAttachment.numeroDocumento = _sPrefijoConDoc;
+
+                            #region Revision Correos a Enviar
+
+                            #region Variables Correo
+
+                            string CorreoDeEntrega1 = Convert.ToString(oCabecera.Fields.Item("correoEntrega1").Value.ToString());
+                            string CorreoDeEntrega2 = Convert.ToString(oCabecera.Fields.Item("correoEntrega2").Value.ToString());
+                            string CorreoDeEntrega3 = Convert.ToString(oCabecera.Fields.Item("correoEntrega3").Value.ToString());
+                            string CorreoDeEntrega4 = Convert.ToString(oCabecera.Fields.Item("correoEntrega4").Value.ToString());
+                            string CorreoDeEntrega5 = Convert.ToString(oCabecera.Fields.Item("correoEntrega5").Value.ToString());
+
+                            int ContadorCorreos = 0;
+
+                            #endregion
+
+                            #region Contador de los correos a enviar 
+
+                            if (string.IsNullOrEmpty(CorreoDeEntrega1))
+                            {
+
+                            }
+                            else
+                            {
+                                ContadorCorreos++;
+                            }
+
+                            if (string.IsNullOrEmpty(CorreoDeEntrega2))
+                            {
+
+                            }
+                            else
+                            {
+                                ContadorCorreos++;
+                            }
+
+                            if (string.IsNullOrEmpty(CorreoDeEntrega3))
+                            {
+
+                            }
+                            else
+                            {
+                                ContadorCorreos++;
+                            }
+
+                            if (string.IsNullOrEmpty(CorreoDeEntrega4))
+                            {
+
+                            }
+                            else
+                            {
+                                ContadorCorreos++;
+                            }
+
+                            if (string.IsNullOrEmpty(CorreoDeEntrega5))
+                            {
+
+                            }
+                            else
+                            {
+                                ContadorCorreos++;
+                            }
+
+                            #endregion
+
+                            string[] correoEntrega = new string[ContadorCorreos];
+
+                            #region Asignacion de los correos a enviar
+
+                            if (ContadorCorreos == 1)
+                            {
+                                correoEntrega[0] = CorreoDeEntrega1;
+                            }
+                            else if (ContadorCorreos == 2)
+                            {
+                                correoEntrega[0] = CorreoDeEntrega1;
+                                correoEntrega[1] = CorreoDeEntrega2;
+                            }
+                            else if (ContadorCorreos == 3)
+                            {
+                                correoEntrega[0] = CorreoDeEntrega1;
+                                correoEntrega[1] = CorreoDeEntrega2;
+                                correoEntrega[2] = CorreoDeEntrega3;
+                            }
+                            else if (ContadorCorreos == 4)
+                            {
+                                correoEntrega[0] = CorreoDeEntrega1;
+                                correoEntrega[1] = CorreoDeEntrega2;
+                                correoEntrega[2] = CorreoDeEntrega3;
+                                correoEntrega[3] = CorreoDeEntrega4;
+                            }
+                            else if (ContadorCorreos == 5)
+                            {
+                                correoEntrega[0] = CorreoDeEntrega1;
+                                correoEntrega[1] = CorreoDeEntrega2;
+                                correoEntrega[2] = CorreoDeEntrega3;
+                                correoEntrega[3] = CorreoDeEntrega4;
+                                correoEntrega[4] = CorreoDeEntrega5;
+                            }
+
+                            #endregion
+
+                            #endregion
+
+                            uploadAttachment.email = correoEntrega;
+                            uploadAttachment.nombre = file.Name.Substring(0, file.Name.Length - 4);
+                            uploadAttachment.formato = file.Extension.Substring(1);
+
+                            if (i == 0)
+                            {
+                                uploadAttachment.tipo = "1";
+                            }
+                            else
+                            {
+                                uploadAttachment.tipo = "2";
+                            }
+
+                            if (Convert.ToString(oCabecera.Fields.Item("notificar").Value.ToString()) == "NO")
+                            {
+                                uploadAttachment.enviar = "0";
+                            }
+                            else
+                            {
+                                if (i == iQuantityAttchament)
+                                {
+                                    uploadAttachment.enviar = "1";
+                                }
+                                else
+                                {
+                                    uploadAttachment.enviar = "0";
+
+                                }
+
+                            }
+
+                            ServicioAdjuntosFE.UploadAttachmentResponse fileRespuesta = new ServicioAdjuntosFE.UploadAttachmentResponse();
+                            fileRespuesta = serviceClientAdjuntos.CargarAdjuntos(_tbxTokenEmpresa, _tbxTokenPassword, uploadAttachment);
+                            if (fileRespuesta.codigo == 200)
+                            {
+
+                            }
+                            else
+                            {
+                                if (i == 0)
+                                {
+
+                                DllFunciones.sendMessageBox(_sboapp, " No se cargo correctamente el PDF al portal de TFHKA, " + fileRespuesta.mensaje);
+
+                                }
+                                else
+                                {
+
+                                    DllFunciones.sendMessageBox(_sboapp, " No se cargo correctamente el adjunto al portal de TFHKA, " + fileRespuesta.mensaje);
+
+                                }
+                                                            
+                            }
+
+                        }
+                        else
+                        {
+                            // no debería entrar a este ciclo
+                        }
+
+                    if (i == 0)
                     {
 
                     }
                     else
                     {
-                        DllFunciones.sendMessageBox(_sboapp, " No se cargo correctamente el PDF al portal de TFHKA, " + fileRespuesta.mensaje);
+                        oPathFilesAttachment.MoveNext(); 
                     }
+                    
+                    #endregion
                 }
-                else
-                {
-                    // no debería entrar a este ciclo
-                }
-
             }
+
+
+
+
 
         }
 
@@ -9977,9 +10240,9 @@ namespace eBilling
 
                 if (NumeroID == "1")
                 {
-                    #region Click derecho para adicionar linea en Matrix en Series numeracion
+                    #region Click derecho para buscar productos relacionados
 
-                    if (_sboapp.Menus.Exists("AddRowMtx"))
+                    if (_sboapp.Menus.Exists("SPR"))
                     {
 
                     }
@@ -9989,8 +10252,8 @@ namespace eBilling
                         oCreationPackage = ((SAPbouiCOM.MenuCreationParams)(_sboapp.CreateObject(SAPbouiCOM.BoCreatableObjectType.cot_MenuCreationParams)));
 
                         oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING;
-                        oCreationPackage.UniqueID = "AddRowMtx";
-                        oCreationPackage.String = "Añadir Serie Numeración";
+                        oCreationPackage.UniqueID = "SPR";
+                        oCreationPackage.String = "Productos relacionados";
                         oCreationPackage.Enabled = true;
 
                         oMenuItem = _sboapp.Menus.Item("1280"); // Data'

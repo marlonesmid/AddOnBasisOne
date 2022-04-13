@@ -98,3 +98,11 @@ D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x64\BOFunciones.pdb
 D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\obj\Debug\Presupuesto.csprojResolveAssemblyReference.cache
 D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\obj\Debug\BOPresupuesto.dll
 D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\obj\Debug\BOPresupuesto.pdb
+D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x86\Formularios\ConfPresup.srf
+D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x86\Formularios\PerfilPresup.srf
+D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x86\Formularios\PresupCuenta.srf
+D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x86\BOPresupuesto.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x86\BOPresupuesto.pdb
+D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x86\BOFunciones.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x86\SAPBusinessOneSDK.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\Presupuesto\bin\x86\BOFunciones.pdb

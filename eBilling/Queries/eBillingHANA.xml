@@ -328,8 +328,10 @@
 
   <GetModoandURL>
     SELECT TOP 1 CASE WHEN "U_BO_Mdo" = 'PRU' THEN "U_BO_URLWSPRU"
-    ELSE "U_BO_URLWSPRD" END AS "URLTFHKA",
-    "U_BO_Mdo" AS "Modo"
+           ELSE "U_BO_URLWSPRD" END AS "URLTFHKA",
+           "U_BO_Mdo" AS "Modo",
+		   "U_BO_MI" AS "ModoIntegracion",
+           "U_BO_PC" AS "ProtocoloComunicacion"
     FROM "%sNameDB%"."@BOEBILLINGP"
     WHERE %Estado% %DocEntry%
   </GetModoandURL>
@@ -379,5 +381,11 @@
     FROM DUMMY
 
   </GetLlaveAndPassword>
+  
+  <PathFilesAttchment>
+SELECT "trgtPath" || '\' || "FileName" || '.' || "FileExt" AS "PathFile"  
+	FROM "ESFERA_COLOR"."ATC1" 
+	WHERE "AbsEntry" = '%DocEntryAdjuntos%'
+  </PathFilesAttchment>
 
 </Queries>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<AddOnRegData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SlientInstallation="No" SlientUpgrade="No" Partnernmsp="BasisOne" SchemaVersion="3.0" Type="" MultipleVersion="false" OnDemand="" OnPremise="" ExtName="Basis One 10.2.1.9" ExtVersion="10.2.1.9" Contdata="" Partner="Basis One" DBType="Both" ClientType="A">
+<AddOnRegData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SlientInstallation="No" SlientUpgrade="No" Partnernmsp="BasisOne" SchemaVersion="3.0" Type="" MultipleVersion="false" OnDemand="" OnPremise="" ExtName="Basis One 93.2.1.9" ExtVersion="93.2.1.9" Contdata="" Partner="Basis One" DBType="Both" ClientType="A">
   <Validity>
     <SBOCompatibility>
       <Version From="100.000.00" To="100.999.99" />
@@ -18,12 +18,9 @@
   </Configuration>
   <Addons>
     <Addon Name="" Group="" ForceFlag="" Visible="" AutoAssign="" SelfUpgrd="">
-      <x86 AddonExe="D:\Github\AddOn_BasisOne_SAP10\BasisOne\bin\x86\BasisOne.exe" AddonSig="">
+      <x86 AddonExe="D:\Github\BasisOne\SAP\AddOnBasisOne\BasisOne\bin\x86\BasisOne.exe" AddonSig="">
         <Installation>
           <Files>
-            <File FileName="BasisOne.b1s">
-              <Actions />
-            </File>
             <File FileName="BasisOne.exe">
               <Actions />
             </File>
@@ -31,12 +28,6 @@
               <Actions />
             </File>
             <File FileName="BasisOne.vshost.exe">
-              <Actions />
-            </File>
-            <File FileName="BasisOne.vshost.exe.config">
-              <Actions />
-            </File>
-            <File FileName="BasisOne.vshost.exe.manifest">
               <Actions />
             </File>
             <File FileName="BOeBilling.dll">
@@ -52,9 +43,6 @@
               <Actions />
             </File>
             <File FileName="BOProduccion.dll">
-              <Actions />
-            </File>
-            <File FileName="Control de cambios.txt">
               <Actions />
             </File>
             <File FileName="CrystalDecisions.CrystalReports.Engine.dll">
@@ -184,9 +172,6 @@
         </Installation>
         <Uninstallation>
           <Files>
-            <File FileName="BasisOne.b1s">
-              <Actions />
-            </File>
             <File FileName="BasisOne.exe">
               <Actions />
             </File>
@@ -194,12 +179,6 @@
               <Actions />
             </File>
             <File FileName="BasisOne.vshost.exe">
-              <Actions />
-            </File>
-            <File FileName="BasisOne.vshost.exe.config">
-              <Actions />
-            </File>
-            <File FileName="BasisOne.vshost.exe.manifest">
               <Actions />
             </File>
             <File FileName="BOeBilling.dll">
@@ -215,9 +194,6 @@
               <Actions />
             </File>
             <File FileName="BOProduccion.dll">
-              <Actions />
-            </File>
-            <File FileName="Control de cambios.txt">
               <Actions />
             </File>
             <File FileName="CrystalDecisions.CrystalReports.Engine.dll">
@@ -346,12 +322,9 @@
           </Files>
         </Uninstallation>
       </x86>
-      <x64 AddonExe="D:\Github\AddOn_BasisOne_SAP10\BasisOne\bin\x64\BasisOne.exe" AddonSig="">
+      <x64 AddonExe="D:\Github\BasisOne\SAP\AddOnBasisOne\BasisOne\bin\x64\BasisOne.exe" AddonSig="">
         <Installation>
           <Files>
-            <File FileName="BasisOne.b1s">
-              <Actions />
-            </File>
             <File FileName="BasisOne.exe">
               <Actions />
             </File>
@@ -359,12 +332,6 @@
               <Actions />
             </File>
             <File FileName="BasisOne.vshost.exe">
-              <Actions />
-            </File>
-            <File FileName="BasisOne.vshost.exe.config">
-              <Actions />
-            </File>
-            <File FileName="BasisOne.vshost.exe.manifest">
               <Actions />
             </File>
             <File FileName="BOeBilling.dll">
@@ -380,9 +347,6 @@
               <Actions />
             </File>
             <File FileName="BOProduccion.dll">
-              <Actions />
-            </File>
-            <File FileName="Control de cambios.txt">
               <Actions />
             </File>
             <File FileName="CrystalDecisions.CrystalReports.Engine.dll">
@@ -539,9 +503,6 @@
         </Installation>
         <Uninstallation>
           <Files>
-            <File FileName="BasisOne.b1s">
-              <Actions />
-            </File>
             <File FileName="BasisOne.exe">
               <Actions />
             </File>
@@ -549,12 +510,6 @@
               <Actions />
             </File>
             <File FileName="BasisOne.vshost.exe">
-              <Actions />
-            </File>
-            <File FileName="BasisOne.vshost.exe.config">
-              <Actions />
-            </File>
-            <File FileName="BasisOne.vshost.exe.manifest">
               <Actions />
             </File>
             <File FileName="BOeBilling.dll">
@@ -570,9 +525,6 @@
               <Actions />
             </File>
             <File FileName="BOProduccion.dll">
-              <Actions />
-            </File>
-            <File FileName="Control de cambios.txt">
               <Actions />
             </File>
             <File FileName="CrystalDecisions.CrystalReports.Engine.dll">

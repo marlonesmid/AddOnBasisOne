@@ -1004,12 +1004,12 @@ namespace Funciones
 
         }
 
-        public int GetFormmatedSearchKey(string _FormID, string _ItemID, SAPbobsCOM.Company oCompany, SAPbouiCOM.Application sboapp)
+        public int GetFormmatedSearchKey(string DllName, string _FormID, string _ItemID, SAPbobsCOM.Company oCompany, SAPbouiCOM.Application sboapp)
         {
             int ID = 0;
             string sGetStringXMLDocument = null;
 
-            sGetStringXMLDocument = GetStringXMLDocument(oCompany, "eBilling", "eBilling", "GetFormmatedSearchKey");
+            sGetStringXMLDocument = GetStringXMLDocument(oCompany, DllName, DllName, "GetFormmatedSearchKey");
             sGetStringXMLDocument = sGetStringXMLDocument.Replace("%FormID%", _FormID).Replace("%ItemID%", _ItemID);
 
             SAPbobsCOM.Recordset oGetStringXMLDocument = ((SAPbobsCOM.Recordset)(oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)));

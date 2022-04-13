@@ -1812,8 +1812,8 @@ namespace BOProduccion
             otxtIPR.ChooseFromListUID = "CFL1";
             otxtIPR.ChooseFromListAlias = "Code";
 
-            oMatrixNOP.Columns.Item("Col_1").ChooseFromListUID = "CFL3";
-            oMatrixNOP.Columns.Item("Col_1").ChooseFromListAlias = "CardCode";
+            oMatrixNOP.Columns.Item("Col_0").ChooseFromListUID = "CFL2";
+            oMatrixNOP.Columns.Item("Col_0").ChooseFromListAlias = "Code";
 
             #endregion         
 

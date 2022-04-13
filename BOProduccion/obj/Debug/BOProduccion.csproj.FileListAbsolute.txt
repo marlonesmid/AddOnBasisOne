@@ -32,3 +32,8 @@ D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\bin\x64\BOFunciones.pdb
 D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.csprojResolveAssemblyReference.cache
 D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.dll
 D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.pdb
+D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\bin\x86\BOProduccion.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\bin\x86\BOProduccion.pdb
+D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\bin\x86\BOFunciones.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\bin\x86\SAPBusinessOneSDK.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\BOProduccion\bin\x86\BOFunciones.pdb
