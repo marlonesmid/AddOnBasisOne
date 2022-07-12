@@ -207,14 +207,6 @@ namespace BasisOne
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="FormUID"></param>
-        /// <param name="pVal"></param>
-        /// <param name="BubbleEvent"></param>
-        /// 
-
         private void Sboapp_ItemEvent(string FormUID, ref ItemEvent pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
@@ -1712,7 +1704,7 @@ namespace BasisOne
                                 }
                             }
 
-                            if (pVal.FormType == 133 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
+                            else if (pVal.FormType == 133 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
                             {
                                 SAPbouiCOM.Form oFormInvoice;
 
@@ -1727,7 +1719,18 @@ namespace BasisOne
                                 }
                             }
 
-                            if (pVal.FormType == 60090 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                            else if (pVal.FormType == 141 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
+                            {
+                                SAPbouiCOM.Form oFormInvoice;
+
+                                oFormInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+
+                                if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
+                                {                                    
+                                    DlleBilling.AddItemsToDocumets(oFormInvoice,"FacturaCompraDocumentoSoporte");                                    
+                                }
+                            }
+                            else if (pVal.FormType == 60090 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
                             {
                                 SAPbouiCOM.Form oFormPaymentAndInvoice;
 
@@ -1739,7 +1742,7 @@ namespace BasisOne
                                 }
                             }
 
-                            if (pVal.FormType == 60091 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                            else if (pVal.FormType == 60091 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
                             {
                                 SAPbouiCOM.Form oFormInvoice;
 
@@ -1751,7 +1754,7 @@ namespace BasisOne
                                 }
                             }
 
-                            if (pVal.FormType == 179 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                            else if (pVal.FormType == 179 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
                             {
                                 SAPbouiCOM.Form oCreditNote;
 

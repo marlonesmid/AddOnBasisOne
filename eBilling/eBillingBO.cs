@@ -168,6 +168,10 @@ namespace eBilling
             {
                 otxtCEB.DataBind.SetBound(true, "ORIN", "U_BO_EBC");
             }
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                otxtCEB.DataBind.SetBound(true, "OPCH", "U_BO_EBC");
+            }
 
             oCampoInvoices.FromPane = 5;
             oCampoInvoices.ToPane = 5;
@@ -219,6 +223,10 @@ namespace eBilling
             else if (__TipoDoc == "NotaCreditoClientes")
             {
                 cboPP.DataBind.SetBound(true, "ORIN", "U_BO_EE");
+            }
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                cboPP.DataBind.SetBound(true, "OPCH", "U_BO_EE");
             }
 
             cboPP.ValidValues.Add("Y", "Si");
@@ -276,7 +284,11 @@ namespace eBilling
             {
                 otxtCRWS.DataBind.SetBound(true, "ORIN", "U_BO_CRWS");
             }
-
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                otxtCRWS.DataBind.SetBound(true, "OPCH", "U_BO_CRWS");
+            }
+            
             oCampoInvoices.FromPane = 5;
             oCampoInvoices.ToPane = 5;
 
@@ -324,7 +336,11 @@ namespace eBilling
             {
                 otxtMRWS.DataBind.SetBound(true, "ORIN", "U_BO_MRWS");
             }
-
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                otxtMRWS.DataBind.SetBound(true, "OPCH", "U_BO_MRWS");
+            }
+            
             oCampoInvoices.FromPane = 5;
             oCampoInvoices.ToPane = 5;
 
@@ -373,7 +389,11 @@ namespace eBilling
             {
                 otxtRPDF.DataBind.SetBound(true, "ORIN", "U_BO_RPDF");
             }
-
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                otxtRPDF.DataBind.SetBound(true, "OPCH", "U_BO_RPDF");
+            }
+            
             oCampoInvoices.FromPane = 5;
             oCampoInvoices.ToPane = 5;
 
@@ -422,7 +442,11 @@ namespace eBilling
             {
                 otxtRPDF.DataBind.SetBound(true, "ORIN", "U_BO_XML");
             }
-
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                otxtRPDF.DataBind.SetBound(true, "OPCH", "U_BO_XML");
+            }
+            
             oCampoInvoices.FromPane = 5;
             oCampoInvoices.ToPane = 5;
 
@@ -473,6 +497,10 @@ namespace eBilling
             else if (__TipoDoc == "NotaCreditoClientes")
             {
                 cboS.DataBind.SetBound(true, "ORIN", "U_BO_S");
+            }
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                cboS.DataBind.SetBound(true, "OPCH", "U_BO_S");
             }
 
             cboS.ValidValues.Add("0", "A la espera");
@@ -528,7 +556,11 @@ namespace eBilling
             {
                 otxtCUFE.DataBind.SetBound(true, "ORIN", "U_BO_CUFE");
             }
-
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                otxtCUFE.DataBind.SetBound(true, "OPCH", "U_BO_CUFE");
+            }
+            
             oCampoInvoices.FromPane = 5;
             oCampoInvoices.ToPane = 5;
 
@@ -580,7 +612,11 @@ namespace eBilling
             {
                 cboPP.DataBind.SetBound(true, "ORIN", "U_BO_PP");
             }
-
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                cboPP.DataBind.SetBound(true, "OPCH", "U_BO_PP");
+            }
+            
             cboPP.ValidValues.Add("A", "AddIn");
             cboPP.ValidValues.Add("M", "Masivo");
 
@@ -631,6 +667,10 @@ namespace eBilling
             else if (__TipoDoc == "NotaCreditoClientes")
             {
                 otxtQR.DataBind.SetBound(true, "ORIN", "U_BO_QR");
+            }
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                otxtQR.DataBind.SetBound(true, "OPCH", "U_BO_QR");
             }
 
             oCampoInvoices.FromPane = 5;
@@ -748,7 +788,11 @@ namespace eBilling
             {
                 cboMP.DataBind.SetBound(true, "ORIN", "U_BO_MP");
             }
-
+            else if (__TipoDoc == "FacturaCompraDocumentoSoporte")
+            {
+                cboMP.DataBind.SetBound(true, "OPCH", "U_BO_MP");
+            }
+            
             cboMP.ValidValues.Add("1", "Instrumento no definido");
             cboMP.ValidValues.Add("2", "Crédito ACH");
             cboMP.ValidValues.Add("3", "Débito ACH");
