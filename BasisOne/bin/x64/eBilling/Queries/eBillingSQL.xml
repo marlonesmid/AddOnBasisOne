@@ -202,7 +202,7 @@
 
   <FormattedSearchSeriesNumeracion>
     SELECT "Series", "SeriesName", "InitialNum", "LastNum", "Remark" FROM NNM1
-    WHERE ObjectCode IN ('13','14')
+    WHERE ObjectCode IN ('13','14','18')
   </FormattedSearchSeriesNumeracion>
 
   <GetFormmatedSearchKey>

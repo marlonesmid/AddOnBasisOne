@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Xml;
 using System.Windows.Forms;
 
-
 namespace Funciones
 {
     public class Comunes

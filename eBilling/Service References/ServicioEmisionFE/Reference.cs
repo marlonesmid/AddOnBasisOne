@@ -98,6 +98,9 @@ namespace eBilling.ServicioEmisionFE {
         private string redondeoAplicadoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private eBilling.ServicioEmisionFE.SectorSalud sectorSaludField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private eBilling.ServicioEmisionFE.TasaDeCambio tasaDeCambioField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -111,6 +114,9 @@ namespace eBilling.ServicioEmisionFE {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string tipoOperacionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string tipoSectorField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string totalAnticiposField;
@@ -472,6 +478,19 @@ namespace eBilling.ServicioEmisionFE {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public eBilling.ServicioEmisionFE.SectorSalud sectorSalud {
+            get {
+                return this.sectorSaludField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.sectorSaludField, value) != true)) {
+                    this.sectorSaludField = value;
+                    this.RaisePropertyChanged("sectorSalud");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public eBilling.ServicioEmisionFE.TasaDeCambio tasaDeCambio {
             get {
                 return this.tasaDeCambioField;
@@ -532,6 +551,19 @@ namespace eBilling.ServicioEmisionFE {
                 if ((object.ReferenceEquals(this.tipoOperacionField, value) != true)) {
                     this.tipoOperacionField = value;
                     this.RaisePropertyChanged("tipoOperacion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string tipoSector {
+            get {
+                return this.tipoSectorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.tipoSectorField, value) != true)) {
+                    this.tipoSectorField = value;
+                    this.RaisePropertyChanged("tipoSector");
                 }
             }
         }
@@ -1427,6 +1459,115 @@ namespace eBilling.ServicioEmisionFE {
                 if ((object.ReferenceEquals(this.matriculaTransporteField, value) != true)) {
                     this.matriculaTransporteField = value;
                     this.RaisePropertyChanged("matriculaTransporte");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="SectorSalud", Namespace="http://schemas.datacontract.org/2004/07/ServiceSoap.UBL2._0.Models.Object")]
+    [System.SerializableAttribute()]
+    public partial class SectorSalud : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private eBilling.ServicioEmisionFE.BeneficiarioSalud BeneficiarioField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string IdPersonalizacionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private eBilling.ServicioEmisionFE.DatosPacienteSalud[] PacientesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TipoEscenarioField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private eBilling.ServicioEmisionFE.Extras[] extrasField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public eBilling.ServicioEmisionFE.BeneficiarioSalud Beneficiario {
+            get {
+                return this.BeneficiarioField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.BeneficiarioField, value) != true)) {
+                    this.BeneficiarioField = value;
+                    this.RaisePropertyChanged("Beneficiario");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string IdPersonalizacion {
+            get {
+                return this.IdPersonalizacionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.IdPersonalizacionField, value) != true)) {
+                    this.IdPersonalizacionField = value;
+                    this.RaisePropertyChanged("IdPersonalizacion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public eBilling.ServicioEmisionFE.DatosPacienteSalud[] Pacientes {
+            get {
+                return this.PacientesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PacientesField, value) != true)) {
+                    this.PacientesField = value;
+                    this.RaisePropertyChanged("Pacientes");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TipoEscenario {
+            get {
+                return this.TipoEscenarioField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TipoEscenarioField, value) != true)) {
+                    this.TipoEscenarioField = value;
+                    this.RaisePropertyChanged("TipoEscenario");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public eBilling.ServicioEmisionFE.Extras[] extras {
+            get {
+                return this.extrasField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.extrasField, value) != true)) {
+                    this.extrasField = value;
+                    this.RaisePropertyChanged("extras");
                 }
             }
         }
@@ -2567,6 +2708,12 @@ namespace eBilling.ServicioEmisionFE {
         private string descripcionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string descripcion2Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string descripcion3Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string descripcionTecnicaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -2595,6 +2742,9 @@ namespace eBilling.ServicioEmisionFE {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private eBilling.ServicioEmisionFE.Extensible[] extrasField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string idEsquemaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private eBilling.ServicioEmisionFE.FacturaImpuestos[] impuestosDetallesField;
@@ -2800,6 +2950,32 @@ namespace eBilling.ServicioEmisionFE {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string descripcion2 {
+            get {
+                return this.descripcion2Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.descripcion2Field, value) != true)) {
+                    this.descripcion2Field = value;
+                    this.RaisePropertyChanged("descripcion2");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string descripcion3 {
+            get {
+                return this.descripcion3Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.descripcion3Field, value) != true)) {
+                    this.descripcion3Field = value;
+                    this.RaisePropertyChanged("descripcion3");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string descripcionTecnica {
             get {
                 return this.descripcionTecnicaField;
@@ -2925,6 +3101,19 @@ namespace eBilling.ServicioEmisionFE {
                 if ((object.ReferenceEquals(this.extrasField, value) != true)) {
                     this.extrasField = value;
                     this.RaisePropertyChanged("extras");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string idEsquema {
+            get {
+                return this.idEsquemaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.idEsquemaField, value) != true)) {
+                    this.idEsquemaField = value;
+                    this.RaisePropertyChanged("idEsquema");
                 }
             }
         }
@@ -3228,6 +3417,9 @@ namespace eBilling.ServicioEmisionFE {
         private string codigoInternoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string conceptoRecaudoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string cufeDocReferenciadoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -3246,7 +3438,13 @@ namespace eBilling.ServicioEmisionFE {
         private string fechaInicioValidezField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string montoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string numeroDocumentoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string numeroIdentificacionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string tipoCUFEField;
@@ -3289,6 +3487,19 @@ namespace eBilling.ServicioEmisionFE {
                 if ((object.ReferenceEquals(this.codigoInternoField, value) != true)) {
                     this.codigoInternoField = value;
                     this.RaisePropertyChanged("codigoInterno");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string conceptoRecaudo {
+            get {
+                return this.conceptoRecaudoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.conceptoRecaudoField, value) != true)) {
+                    this.conceptoRecaudoField = value;
+                    this.RaisePropertyChanged("conceptoRecaudo");
                 }
             }
         }
@@ -3372,6 +3583,19 @@ namespace eBilling.ServicioEmisionFE {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string monto {
+            get {
+                return this.montoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.montoField, value) != true)) {
+                    this.montoField = value;
+                    this.RaisePropertyChanged("monto");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string numeroDocumento {
             get {
                 return this.numeroDocumentoField;
@@ -3380,6 +3604,19 @@ namespace eBilling.ServicioEmisionFE {
                 if ((object.ReferenceEquals(this.numeroDocumentoField, value) != true)) {
                     this.numeroDocumentoField = value;
                     this.RaisePropertyChanged("numeroDocumento");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string numeroIdentificacion {
+            get {
+                return this.numeroIdentificacionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.numeroIdentificacionField, value) != true)) {
+                    this.numeroIdentificacionField = value;
+                    this.RaisePropertyChanged("numeroIdentificacion");
                 }
             }
         }
@@ -3749,6 +3986,9 @@ namespace eBilling.ServicioEmisionFE {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string montoTotalField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string redondeoAplicadoField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -3794,6 +4034,19 @@ namespace eBilling.ServicioEmisionFE {
                 if ((object.ReferenceEquals(this.montoTotalField, value) != true)) {
                     this.montoTotalField = value;
                     this.RaisePropertyChanged("montoTotal");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string redondeoAplicado {
+            get {
+                return this.redondeoAplicadoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.redondeoAplicadoField, value) != true)) {
+                    this.redondeoAplicadoField = value;
+                    this.RaisePropertyChanged("redondeoAplicado");
                 }
             }
         }
@@ -5325,6 +5578,9 @@ namespace eBilling.ServicioEmisionFE {
         private string tipoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string unidadMedidaTransporteField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string valorField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -5463,6 +5719,19 @@ namespace eBilling.ServicioEmisionFE {
                 if ((object.ReferenceEquals(this.tipoField, value) != true)) {
                     this.tipoField = value;
                     this.RaisePropertyChanged("tipo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string unidadMedidaTransporte {
+            get {
+                return this.unidadMedidaTransporteField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.unidadMedidaTransporteField, value) != true)) {
+                    this.unidadMedidaTransporteField = value;
+                    this.RaisePropertyChanged("unidadMedidaTransporte");
                 }
             }
         }
@@ -5857,6 +6126,173 @@ namespace eBilling.ServicioEmisionFE {
                 if ((object.ReferenceEquals(this.transportadorTipoIdentificacionField, value) != true)) {
                     this.transportadorTipoIdentificacionField = value;
                     this.RaisePropertyChanged("transportadorTipoIdentificacion");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="BeneficiarioSalud", Namespace="http://schemas.datacontract.org/2004/07/ServiceSoap.UBL2._0.Models.Object")]
+    [System.SerializableAttribute()]
+    public partial class BeneficiarioSalud : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private eBilling.ServicioEmisionFE.Direccion DireccionResidenciaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TipoIdentificacionField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public eBilling.ServicioEmisionFE.Direccion DireccionResidencia {
+            get {
+                return this.DireccionResidenciaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DireccionResidenciaField, value) != true)) {
+                    this.DireccionResidenciaField = value;
+                    this.RaisePropertyChanged("DireccionResidencia");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TipoIdentificacion {
+            get {
+                return this.TipoIdentificacionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TipoIdentificacionField, value) != true)) {
+                    this.TipoIdentificacionField = value;
+                    this.RaisePropertyChanged("TipoIdentificacion");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DatosPacienteSalud", Namespace="http://schemas.datacontract.org/2004/07/ServiceSoap.UBL2._0.Models.Object")]
+    [System.SerializableAttribute()]
+    public partial class DatosPacienteSalud : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private eBilling.ServicioEmisionFE.GeneralSalud[] CamposGeneralesField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public eBilling.ServicioEmisionFE.GeneralSalud[] CamposGenerales {
+            get {
+                return this.CamposGeneralesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CamposGeneralesField, value) != true)) {
+                    this.CamposGeneralesField = value;
+                    this.RaisePropertyChanged("CamposGenerales");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GeneralSalud", Namespace="http://schemas.datacontract.org/2004/07/ServiceSoap.UBL2._0.Models.Object")]
+    [System.SerializableAttribute()]
+    public partial class GeneralSalud : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombreField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ValorField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Nombre {
+            get {
+                return this.NombreField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombreField, value) != true)) {
+                    this.NombreField = value;
+                    this.RaisePropertyChanged("Nombre");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Valor {
+            get {
+                return this.ValorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ValorField, value) != true)) {
+                    this.ValorField = value;
+                    this.RaisePropertyChanged("Valor");
                 }
             }
         }

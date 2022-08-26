@@ -158,3 +158,85 @@ D:\Github\AddOn_BasisOne_SAP10\eBilling\obj\Debug\eBilling.csprojResolveAssembly
 D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\obj\Debug\eBilling.csprojResolveAssemblyReference.cache
 D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\obj\Debug\BOeBilling.dll
 D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\obj\Debug\BOeBilling.pdb
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\BOeBilling.dll.config
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\BOeBilling.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\BOeBilling.pdb
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\BOFunciones.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\SAPBusinessOneSDK.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\stdole.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\BOFunciones.pdb
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BOeBilling.dll.config
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BOeBilling.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BOeBilling.pdb
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BOFunciones.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.CrystalReports.Engine.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.Shared.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.Windows.Forms.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\SAPBusinessOneSDK.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\log4net.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\FlashControlV71.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\stdole.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\ShockwaveFlashObjects.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BOFunciones.pdb
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.DataDefModel.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.ClientDoc.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.ReportDefModel.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.Enterprise.Framework.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.CommLayer.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.Controllers.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.Enterprise.InfoStore.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.DataSetConversion.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.Prompting.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.XmlSerialize.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.CubeDefModel.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.CommonObjectModel.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.ObjectFactory.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.ReportAppServer.CommonControls.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\CrystalDecisions.Enterprise.PluginManager.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BusinessObjects.Enterprise.Sdk.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BusinessObjects.Foundation.Logging.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BusinessObjects.Enterprise.Sdk.ebus.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BusinessObjects.Enterprise.Sdk.fssl.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BusinessObjects.Enterprise.Sdk.Ssl.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BusinessObjects.Enterprise.Sdk.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x86\BusinessObjects.Enterprise.Sdk.ZipLib.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\obj\Debug\eBilling.csprojResolveAssemblyReference.cache
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BOeBilling.dll.config
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BOeBilling.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BOeBilling.pdb
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BOFunciones.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.CrystalReports.Engine.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.Shared.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\SAPBusinessOneSDK.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.DataDefModel.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.ClientDoc.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.ReportDefModel.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.Enterprise.Framework.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.CommLayer.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.Controllers.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.Enterprise.InfoStore.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.DataSetConversion.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.Prompting.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.XmlSerialize.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.CubeDefModel.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.CommonObjectModel.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.ObjectFactory.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\log4net.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\FlashControlV71.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportAppServer.CommonControls.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.Enterprise.PluginManager.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BusinessObjects.Enterprise.Sdk.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\stdole.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\ShockwaveFlashObjects.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BusinessObjects.Foundation.Logging.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BOFunciones.pdb
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BusinessObjects.Enterprise.Sdk.ebus.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BusinessObjects.Enterprise.Sdk.fssl.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BusinessObjects.Enterprise.Sdk.Ssl.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BusinessObjects.Enterprise.Sdk.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BusinessObjects.Enterprise.Sdk.ZipLib.netmodule
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\obj\Debug\BOeBilling.dll
+C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\obj\Debug\BOeBilling.pdb
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportSource.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\FlashControlV71.dll
+D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\ShockwaveFlashObjects.dll
