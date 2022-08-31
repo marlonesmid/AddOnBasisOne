@@ -10,6 +10,7 @@
   
   <BO_FacturaXML_HBT>
 
+
     CREATE PROCEDURE [dbo].[BO_FacturaXML]
 
     @DocEntry AS INT,
@@ -47,13 +48,13 @@
 
     CONCAT(T8.U_BO_PREF,'-',(CAST(T6."InitialNum" AS NVARCHAR(50)))) AS 'RangoNmeracion',
 
-    CASE WHEN @CantidadDecimales = '0' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,0))), 0), '.', ',')
-    WHEN @CantidadDecimales = '1' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,1))), 0), '.', ',')
-    WHEN @CantidadDecimales = '2' THEN REPLACE(CONVERT(varchar(50),(CAST(0 AS DECIMAL(19,2))), 0), '.', ',')
-    WHEN @CantidadDecimales = '3' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,3))), 0), '.', ',')
-    WHEN @CantidadDecimales = '4' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,4))), 0), '.', ',')
-    WHEN @CantidadDecimales = '5' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,5))), 0), '.', ',')
-    WHEN @CantidadDecimales = '6' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,6))), 0), '.', ',')
+    CASE @CantidadDecimales WHEN '0' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,0))), 0), '.', ',')
+    WHEN '1' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,1))), 0), '.', ',')
+    WHEN '2' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,2))), 0), '.', ',')
+    WHEN '3' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,3))), 0), '.', ',')
+    WHEN '4' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,4))), 0), '.', ',')
+    WHEN '5' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,5))), 0), '.', ',')
+    WHEN '6' THEN REPLACE(CONVERT(varchar(50),(CAST(T0.RoundDif AS DECIMAL(19,6))), 0), '.', ',')
     ELSE '0'
     END AS 'RedondeoAplicado',
 
@@ -68,19 +69,19 @@
 
     CASE WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur" IN ('$','COP') THEN REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSum) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout) AS DECIMAL(19,2))), 0), '.', ',')
     WHEN isnull(T0."DiscPrcnt",0) != '0' AND T0."DocCur" IN ('$','COP') THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSum) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."DiscSum")AS DECIMAL(19,2))), 0), '.', ',')
-    WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur" = 'USD' THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."DiscSum")AS DECIMAL(19,2))), 0), '.', ',')
-    WHEN isnull(T0."DiscPrcnt",0) != '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."DiscSum")AS DECIMAL(19,2))), 0), '.', ',')
+    WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."DiscSum")AS DECIMAL(19,0))), 0), '.', ',')
+    WHEN isnull(T0."DiscPrcnt",0) != '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."DiscSum")AS DECIMAL(19,0))), 0), '.', ',')
     ELSE REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSumFrg) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."DiscSum" AS DECIMAL(19,2))), 0), '.', ',')
     END AS 'totalBaseImponible',
 
-    CASE WHEN T0."DocCur" ='USD' THEN REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout)+T0."VatSumFC" AS DECIMAL(19,2))), 0), '.', ',')
+    CASE WHEN T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSum) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout)+T0."VatSumFC" AS DECIMAL(19,2))), 0), '.', ',')
     WHEN T0."DocCur" IN ('$','COP') THEN REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSum) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."VatSum"+(SELECT COALESCE(SUM(A.WTAmnt),0) FROM INV5 A INNER JOIN OWHT B ON A.WTCode=B.WTCode WHERE A."AbsEntry" = @DocEntryLayout AND B."U_HBT_TipRet" = '1')+(case when T0."DiscSum" < convert(decimal(19,2),0) then 0 else T0."DiscSum" end) AS DECIMAL(19,2))), 0), '.', ',')
 					       ELSE REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSumFrg) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0.VatSumFC+(SELECT COALESCE(SUM(A.WTAmnt),0) FROM INV5 A INNER JOIN OWHT B ON A.WTCode=B.WTCode WHERE A."AbsEntry" = @DocEntryLayout AND B."U_HBT_TipRet" = '1')+(case when T0."DiscSum" < convert(decimal(19,2),0) then 0 else T0."DiscSum" end) AS DECIMAL(19,2))), 0), '.', ',')
 					  END AS 'totalBrutoConImpuesto',
 
 					  CASE WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur" IN ('$','COP') THEN REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.LineTotal) FROM INV1 SQ WHERE SQ.DocEntry = @DocEntryLayout)+T0."VatSum"+T0."RoundDif"+(SELECT COALESCE(SUM(A.WTAmnt),0) FROM INV5 A INNER JOIN OWHT B ON A.WTCode=B.WTCode WHERE A."AbsEntry" = @DocEntryLayout AND B."U_HBT_TipRet" = '1') AS DECIMAL(19,2))), 0), '.', ',')
 						   WHEN isnull(T0."DiscPrcnt",0) != '0' AND T0."DocCur" IN ('$','COP') THEN REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSum) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."VatSum"+T0."RoundDif"+(SELECT COALESCE(SUM(A.WTAmnt),0) FROM INV5 A INNER JOIN OWHT B ON A.WTCode=B.WTCode WHERE A."AbsEntry" = @DocEntryLayout AND B."U_HBT_TipRet" = '1') AS DECIMAL(19,2))), 0), '.', ',')
-						   WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."VatSumFC"+T0."RoundDifFC" AS DECIMAL(19,2))), 0), '.', ',')
+						   WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(T0."BaseAmntFC"+T0."VatSumFC"+T0."RoundDifFC" AS DECIMAL(19,2))), 0), '.', ',')
 						   WHEN isnull(T0."DiscPrcnt",0) != '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(T0."BaseAmntFC"+T0."VatSumFC"+T0."RoundDifFC" AS DECIMAL(19,2))), 0), '.', ',')
 					       ELSE REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSumFrg) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0.VatSumFC+T0.RoundDifFC AS DECIMAL(19,2))), 0), '.', ',')
 					  END AS 'totalMonto',
@@ -89,8 +90,8 @@
 
 					  CASE WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur" IN ('$','COP') THEN REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSum) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout)AS DECIMAL(19,2))), 0), '.', ',')
 						   WHEN isnull(T0."DiscPrcnt",0) != '0' AND T0."DocCur" IN ('$','COP') THEN  REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSum) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)+T0."DiscSum")AS DECIMAL(19,2))), 0), '.', ',')
-                           WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout  AND SQ."RelateType" = 1)-T0."DiscSum")AS DECIMAL(19,2))), 0), '.', ',')
-                           WHEN isnull(T0."DiscPrcnt",0) != '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout  AND SQ."RelateType" = 1)-T0."DiscSum")AS DECIMAL(19,2))), 0), '.', ',')
+                           WHEN isnull(T0."DiscPrcnt",0) = '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout  AND SQ."RelateType" = 1)-T0."DiscSum")AS DECIMAL(19,0))), 0), '.', ',')
+                           WHEN isnull(T0."DiscPrcnt",0) != '0' AND T0."DocCur"='USD' THEN REPLACE(CONVERT(varchar(50),(CAST(((SELECT SUM(SQ.BaseSumSys) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout  AND SQ."RelateType" = 1)-T0."DiscSum")AS DECIMAL(19,0))), 0), '.', ',')
 						   ELSE REPLACE(CONVERT(varchar(50),(CAST((SELECT SUM(SQ.BaseSumFrg) FROM INV4 SQ WHERE SQ.DocEntry = @DocEntryLayout AND SQ."RelateType" = 1)-T0."DiscSum" AS DECIMAL(19,2))), 0), '.', ',')
 					  END AS 'totalSinImpuestos',
 
@@ -348,8 +349,7 @@ AS=''
 
       BEGIN
       --------------------------- Consulta Impuestos IVA ---------------------------------------
-      SELECT CASE WHEN T1.DocCur IN ('$','COP') THEN REPLACE(CONVERT(varchar(50),(CAST(SUM(T0."BaseSum") AS DECIMAL(19,2))), 0), '.', ',')
-      ELSE REPLACE(CONVERT(varchar(50),(CAST(SUM(T0."BaseSumFrg") AS DECIMAL(19,2))), 0), '.', ',') END AS 'baseImponibleTOTALImp',
+      SELECT REPLACE(CONVERT(varchar(50),(CAST(SUM(T0."BaseSum") AS DECIMAL(19,2))), 0), '.', ',') AS 'baseImponibleTOTALImp',
 
       '01' AS 'codigoTOTALImp',
 
@@ -363,7 +363,7 @@ AS=''
 
       WHERE T0."DocEntry" = @DocEntryLayout AND T1."DocSubType" != 'DN' AND T0.TaxStatus = 'Y'
 
-      GROUP BY T0."TaxRate", T1.DocCur
+      GROUP BY T0."TaxRate"
 
       --------------------------- Consulta Impuestos ICA ---------------------------------------------------
       UNION ALL
@@ -435,21 +435,21 @@ AS=''
 
       SELECT REPLACE(CONVERT(varchar(50),(CAST(ISNULL(SUM(T0."BaseSum"),0) AS DECIMAL(19,2))), 0), '.', ',') AS 'baseImponibleTOTALImp',
 
-      CASE WHEN T0."TaxSum" != 0 THEN '01' ELSE '01' END AS 'codigoTOTALImp',
+      '01' AS 'codigoTOTALImp',
 
       REPLACE(CONVERT(varchar(50),(CAST( 19 AS DECIMAL(19,2))), 0), '.', ',') AS 'porcentajeTOTALImp',
 
       --CAST(19 AS DECIMAL(19,2)) AS 'porcentajeTOTALImp',
 
-      CASE WHEN T0."TaxSum"  != 0 THEN 'WSD' ELSE 'WSD' END AS 'unidadMedida',
+      'WSD' AS 'unidadMedida',
 
       REPLACE(CONVERT(varchar(50),(CAST(ISNULL(SUM(T0."TaxSum"),0) AS DECIMAL(19,2))), 0), '.', ',') AS 'valorTOTALImp'
 
       FROM INV4 T0 LEFT JOIN OINV T1 ON T0.DocEntry=T1.DocEntry
 
-      WHERE T0."DocEntry" = @DocEntryLayout AND T1."DocSubType" != 'DN' AND T0."RelateType" = 1 AND T0."TaxSum" NOT IN (0) AND T0.TaxStatus = 'Y'
+      WHERE T0."DocEntry" = @DocEntryLayout AND T1."DocSubType" != 'DN' AND T0."RelateType" = 1 AND T0."TaxSum" != 0 AND T0.TaxStatus = 'Y'
 
-      GROUP BY T0.TaxSum
+      --GROUP BY T0."TaxRate"
 
       --------------------------- Consulta Impuestos ICA ---------------------------------------------------
       UNION ALL
@@ -1298,7 +1298,7 @@ ELSE="" CAST(T0.="""DocNum" AS="" NVARCHAR(20="")) END=""
 			  GROUP BY T1."PrctBsAmnt", T1."U_HBT_TipRet"
 
 		  END
-    
+
   </BO_FacturaXML_HBT>
 
   <BO_FacturaXML_OK1>
@@ -2709,10 +2709,6 @@ IF (@ObjectIdLayout = '13' AND @TipoXML = 'Encabezado')
 					  CASE T0."DocCur" WHEN '$' THEN 'COP'
 					  ELSE T0."DocCur" END 
 					  AS 'Moneda',
-            
-      			REPLACE(CONVERT(varchar(100),(CAST(T0.DocRate AS DECIMAL(19,0))), 0), '.', ',')  AS 'tasaDeCambio',
-
-						FORMAT(T0."DocDate", 'yyyy-MM-dd') AS 'fechaDeTasaDeCambio',
 
 					  CONCAT(T8."U_BO_PREF",'-',(CAST(T6."InitialNum" AS NVARCHAR(50)))) AS 'RangoNmeracion',
 
@@ -2908,7 +2904,7 @@ IF (@ObjectIdLayout = '13' AND @TipoXML = 'Encabezado')
 
 						   REPLACE(CONVERT(varchar(50),(CAST(T0."Quantity" AS DECIMAL(19,%Decimal%))), 0), '.', ',') AS 'cantidadUnidades',
 
-						   CASE WHEN T0."ItemCode" IS NULL THEN T0."Dscription" ELSE T0."ItemCode" END AS 'codigoProducto',
+						   T0."ItemCode" AS 'codigoProducto',
 						   T0."Dscription" AS 'descripcion',
 						   '999' AS 'estandarCodigo',
 						   T0."ItemCode" AS 'estandarCodigoProducto',

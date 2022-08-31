@@ -110,40 +110,6 @@
     ***DocNum***
   </GetDebitMemo>
 
-  <GetPurchase>
-    SELECT ROW_NUMBER() OVER(ORDER BY A."DocNum" ASC) AS "#",
-    CASE A."U_BO_S" WHEN '0' THEN 'A la espera'
-    WHEN '1' THEN 'Aceptada'
-    WHEN '2' THEN 'Rechaza'
-    WHEN '3' THEN 'En validación'
-    ELSE 'A la espera' END AS "Estado",
-    A."DocNum" AS "No_Factura",
-    A."CardCode" AS "Codigo_cliente",
-    A."CardName" AS "Nombre_cliente",
-    A."DocDate" AS "Fecha_Documento",
-    A."DocDueDate" AS "Fecha_vencimiento",
-    CASE WHEN A."U_BO_EE" = 'Y' THEN 'SI'
-    WHEN A."U_BO_EE" = 'N' THEN 'NO'
-    ELSE '' END  AS "Enviar_Email",
-    CASE WHEN B."U_BO_StatusEmail" = '200' THEN 'Enviado' ELSE 'Pendiente' END AS "Estado_Correo",
-    B."U_BO_Email1" AS "Correo1",
-    B."U_BO_Email2" AS "Correo2",
-    B."U_BO_Email3" AS "Correo3",
-    B."U_BO_Email4" AS "Correo4",
-    B."U_BO_Email5" AS "Correo5",
-    A."DocTotal" AS "Total_documento",
-    CASE WHEN A."U_BO_MRWS" IS NULL THEN 'No Enviado'
-    ELSE A."U_BO_MRWS" END AS "Respuesta_TFHKA",
-    A."DocEntry" AS "DocEntry"
-    FROM "%sNameDB%"."OPCH" A LEFT JOIN "%sNameDB%"."@BOEE" B ON A."DocEntry"=B."U_BO_DocEntry" AND B."U_BO_ObjecType" = '13'
-    WHERE "DocDate" BETWEEN '%FI%' AND '%FF%'
-    %EstadoDocumento%
-    AND "Series" IN (SELECT "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'DSA')
-    AND "DocSubType"= '--'
-    ***SN***
-    ***DocNum***
-  </GetPurchase>  
-
   <GetSeriesNumberInvoice>
     SELECT "Series" AS "Series", "SeriesName" AS "Nombre", "ObjectCode" AS "ObjectCode" FROM "%sNameDB%"."NNM1"
     WHERE "ObjectCode" = '13' AND "DocSubType" = '--'
@@ -160,7 +126,7 @@
   </GetSeriesNumberDebitMemo>
 
   <GetSeriesNumberActive>
-    SELECT (SELECT TOP 1 "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'FVC') AS "FVC", (SELECT TOP 1 "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'NCC') AS "NCC" , (SELECT TOP 1 "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'NDC') AS "NDC", (SELECT TOP 1 "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'NDC') AS "DSA" FROM DUMMY ;
+    SELECT (SELECT TOP 1 "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'FVC') AS "FVC", (SELECT TOP 1 "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'NCC') AS "NCC" , (SELECT TOP 1 "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'NDC') AS "NDC" FROM DUMMY ;
   </GetSeriesNumberActive>
 
   <GetTiposOperacion>
@@ -254,7 +220,6 @@
     (SELECT TOP 1 "U_BO_L" FROM "%sNameDB%"."@BOEBILLINGP") AS "Localizacion",
     T0."U_BO_CRWS" AS "CRWS",
     IFNULL((SELECT TOP 1 "U_BO_FormE" FROM "%sNameDB%"."@BOEBILLINGP"),0) AS "FormaEnvio",
-    IFNULL((SELECT TOP 1 "U_BO_FEDS" FROM "%sNameDB%"."@BOEBILLINGP"),0) AS "FormaEnvioDS",
     (SELECT TOP 1 "U_BO_LlE" FROM "%sNameDB%"."@BOEBILLINGP" WHERE "U_BO_Status" = 'Y') AS "Llave",
     (SELECT TOP 1 "U_BO_PwdE" FROM "%sNameDB%"."@BOEBILLINGP"  WHERE "U_BO_Status" = 'Y') AS "Password",
     (SELECT TOP 1 "U_BO_UserDB" FROM "%sNameDB%"."@BOEBILLINGP") AS "UserDB",
@@ -418,7 +383,7 @@
   
   <PathFilesAttchment>
 SELECT "trgtPath" || '\' || "FileName" || '.' || "FileExt" AS "PathFile"  
-	FROM "%sNameDB%"."ATC1" 
+	FROM "ESFERA_COLOR"."ATC1" 
 	WHERE "AbsEntry" = '%DocEntryAdjuntos%'
   </PathFilesAttchment>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/ServiceSoap.UBL2._0.Models.Object" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/ServiceSoap.UBL2._0.Models.Object" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://emision21v2.thefactoryhka.com.co/ws/v1.0/Service.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://emision21v4.thefactoryhka.com.co/ws/v1.0/Service.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:complexType name="FacturaGeneral">
     <xs:sequence>
       <xs:element minOccurs="0" name="anticipos" nillable="true" type="tns:ArrayOfAnticipos" />
@@ -28,11 +28,13 @@
       <xs:element minOccurs="0" name="propina" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="rangoNumeracion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="redondeoAplicado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="sectorSalud" nillable="true" type="tns:SectorSalud" />
       <xs:element minOccurs="0" name="tasaDeCambio" nillable="true" type="tns:TasaDeCambio" />
       <xs:element minOccurs="0" name="tasaDeCambioAlternativa" nillable="true" type="tns:TasaDeCambioAlternativa" />
       <xs:element minOccurs="0" name="terminosEntrega" nillable="true" type="tns:TerminosDeEntrega" />
       <xs:element minOccurs="0" name="tipoDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="tipoOperacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="tipoSector" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="totalAnticipos" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="totalBaseImponible" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="totalBrutoConImpuesto" nillable="true" type="xs:string" />
@@ -291,6 +293,8 @@
       <xs:element minOccurs="0" name="codigoProducto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="codigoTipoPrecio" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="descripcion2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="descripcion3" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="descripcionTecnica" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="documentosReferenciados" nillable="true" type="tns:ArrayOfDocumentoReferenciado" />
       <xs:element minOccurs="0" name="estandarCodigo" nillable="true" type="xs:string" />
@@ -301,6 +305,7 @@
       <xs:element minOccurs="0" name="estandarOrganizacion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="estandarSubCodigoProducto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="extras" nillable="true" type="tns:ArrayOfExtensible" />
+      <xs:element minOccurs="0" name="idEsquema" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="impuestosDetalles" nillable="true" type="tns:ArrayOfFacturaImpuestos" />
       <xs:element minOccurs="0" name="impuestosTotales" nillable="true" type="tns:ArrayOfImpuestosTotales" />
       <xs:element minOccurs="0" name="informacionAdicional" nillable="true" type="tns:ArrayOfLineaInformacionAdicional" />
@@ -335,13 +340,16 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="codigoEstatusDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="codigoInterno" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="conceptoRecaudo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="cufeDocReferenciado" nillable="true" type="xs:string" />
       <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="descripcion" nillable="true" type="q3:ArrayOfstring" />
       <xs:element minOccurs="0" name="extras" nillable="true" type="tns:ArrayOfExtensible" />
       <xs:element minOccurs="0" name="fecha" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="fechaFinValidez" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="fechaInicioValidez" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="monto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="numeroDocumento" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="numeroIdentificacion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="tipoCUFE" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="tipoDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="tipoDocumentoCodigo" nillable="true" type="xs:string" />
@@ -379,6 +387,7 @@
       <xs:element minOccurs="0" name="codigoTOTALImp" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="extras" nillable="true" type="tns:ArrayOfExtensible" />
       <xs:element minOccurs="0" name="montoTotal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="redondeoAplicado" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ImpuestosTotales" nillable="true" type="tns:ImpuestosTotales" />
@@ -400,6 +409,7 @@
       <xs:element minOccurs="0" name="nombre" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="secuencia" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="tipo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="unidadMedidaTransporte" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="valor" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -505,6 +515,48 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="OrdenDeCompra" nillable="true" type="tns:OrdenDeCompra" />
+  <xs:complexType name="SectorSalud">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Beneficiario" nillable="true" type="tns:BeneficiarioSalud" />
+      <xs:element minOccurs="0" name="IdPersonalizacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pacientes" nillable="true" type="tns:ArrayOfDatosPacienteSalud" />
+      <xs:element minOccurs="0" name="TipoEscenario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="extras" nillable="true" type="tns:ArrayOfExtras" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SectorSalud" nillable="true" type="tns:SectorSalud" />
+  <xs:complexType name="BeneficiarioSalud">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DireccionResidencia" nillable="true" type="tns:Direccion" />
+      <xs:element minOccurs="0" name="TipoIdentificacion" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BeneficiarioSalud" nillable="true" type="tns:BeneficiarioSalud" />
+  <xs:complexType name="ArrayOfDatosPacienteSalud">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DatosPacienteSalud" nillable="true" type="tns:DatosPacienteSalud" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDatosPacienteSalud" nillable="true" type="tns:ArrayOfDatosPacienteSalud" />
+  <xs:complexType name="DatosPacienteSalud">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CamposGenerales" nillable="true" type="tns:ArrayOfGeneralSalud" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DatosPacienteSalud" nillable="true" type="tns:DatosPacienteSalud" />
+  <xs:complexType name="ArrayOfGeneralSalud">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="GeneralSalud" nillable="true" type="tns:GeneralSalud" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfGeneralSalud" nillable="true" type="tns:ArrayOfGeneralSalud" />
+  <xs:complexType name="GeneralSalud">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Valor" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GeneralSalud" nillable="true" type="tns:GeneralSalud" />
   <xs:complexType name="TasaDeCambio">
     <xs:sequence>
       <xs:element minOccurs="0" name="baseMonedaDestino" nillable="true" type="xs:string" />

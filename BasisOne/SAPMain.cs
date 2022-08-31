@@ -207,6 +207,14 @@ namespace BasisOne
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="FormUID"></param>
+        /// <param name="pVal"></param>
+        /// <param name="BubbleEvent"></param>
+        /// 
+
         private void Sboapp_ItemEvent(string FormUID, ref ItemEvent pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
@@ -336,7 +344,30 @@ namespace BasisOne
 
                                 #endregion
                             }
+                            else if (pVal.FormUID == "BOVDEB" && pVal.ItemUID == "MtxOPCH" && pVal.Before_Action == true && pVal.Action_Success == false)
+                            {
+                                #region Selecciona la infomracion de la matrix notas debito visor de documentos
 
+                                try
+                                {
+                                    #region Variables
+
+                                    SAPbouiCOM.Form oForm_BOVDEB = sboapp.Forms.Item("BOVDEB");
+                                    SAPbouiCOM.Matrix MtxOINVD = (Matrix)oForm_BOVDEB.Items.Item("MtxOPCH").Specific;
+
+                                    #endregion
+
+                                    DllFunciones.SelectRowMatrix(MtxOINVD, pVal);
+
+                                }
+                                catch (Exception)
+                                {
+
+                                    throw;
+                                }
+
+                                #endregion
+                            }
                             #endregion
 
                             #region Socios de negocio
@@ -385,6 +416,19 @@ namespace BasisOne
                                 #endregion
 
                             }
+                            else if (pVal.FormType == 141 && pVal.ItemUID == "lblURL" && pVal.Before_Action == false && pVal.Action_Success == true && (pVal.FormMode == 1 || pVal.FormMode == 2))
+                            {
+                                #region abre la factura en la DIAN
+
+                                SAPbouiCOM.Form oInvoice;
+
+                                oInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+
+                                DlleBilling.DocumentSearchDIAN(oInvoice);
+
+                                #endregion
+
+                            }
 
                             #endregion
 
@@ -416,6 +460,37 @@ namespace BasisOne
                                 #endregion
 
                             }
+
+                            #endregion
+
+                            #region Factura de proveedores - Documento Soporte
+
+                            else if (pVal.FormType == 141 && pVal.ItemUID == "1" && pVal.Before_Action == true && pVal.Action_Success == false && (pVal.FormMode == 2 || pVal.FormMode == 3))
+                            {
+                                #region Valida la informacion de las facturas de anticipo
+
+                                SAPbouiCOM.Form oInvoice_Payment;
+
+                                oInvoice_Payment = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+
+                                //BubbleEvent = DlleBilling.Validate_oInvoices(sboapp, _company, oInvoice_Payment, sMotor);
+
+                                #endregion
+
+                            }
+                            //else if (pVal.FormType == 60090 && pVal.ItemUID == "lblURL" && pVal.Before_Action == false && pVal.Action_Success == true && (pVal.FormMode == 1 || pVal.FormMode == 2))
+                            //{
+                            //    #region Abre la factura en la DIAN
+
+                            //    SAPbouiCOM.Form oInvoicePayment;
+
+                            //    oInvoicePayment = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+
+                            //    DlleBilling.DocumentSearchDIAN(oInvoicePayment);
+
+                            //    #endregion
+
+                            //}
 
                             #endregion
 
@@ -1060,7 +1135,7 @@ namespace BasisOne
 
                                 oFormReserveInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
                                 DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, oFormReserveInvoice, null, "FacturaDeClientes", "A", "ItemEvent");
-                                
+
                                 #endregion
 
                             }
@@ -1145,7 +1220,7 @@ namespace BasisOne
 
                                 oFormPaymentandInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
                                 DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, oFormPaymentandInvoice, null, "FacturaDeClientes", "A", "ItemEvent");
-                                
+
                                 #endregion
                             }
                             else if (pVal.FormType == 60090 && pVal.ItemUID == "BtnSM" && pVal.Before_Action == true)
@@ -1208,6 +1283,63 @@ namespace BasisOne
 
                             #endregion
 
+                            #region Factura de proveedor - Documento Soporte
+
+                            else if (pVal.FormType == 141 && pVal.ItemUID == "FolderBO1" && pVal.Before_Action == true)
+                            {
+                                #region Adiciona pestaña eBilling 
+
+                                SAPbouiCOM.Form oFormPaymentandInvoice;
+
+                                oFormPaymentandInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+                                DlleBilling.ChangePaneFolderDocuments(oFormPaymentandInvoice);
+
+                                #endregion
+                            }
+                            else if (pVal.FormType == 141 && pVal.ItemUID == "BtnEnvi" && pVal.Before_Action == true)
+                            {
+                                #region Se adiciona boton enviar a la DIAN
+
+                                SAPbouiCOM.Form oFormPaymentandInvoice;
+
+                                oFormPaymentandInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+                                DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, oFormPaymentandInvoice, null, "FacturaDeProveedores", "A", "ItemEvent");
+
+                                #endregion
+                            }
+
+
+                            #endregion
+
+                            #region Nota Credito Proveedor - Documento Soporte
+
+                            else if (pVal.FormType == 181 && pVal.ItemUID == "FolderBO1" && pVal.Before_Action == true)
+                            {
+                                #region Adiciona pestaña eBilling 
+
+                                SAPbouiCOM.Form oFormPaymentandInvoice;
+
+                                oFormPaymentandInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+                                DlleBilling.ChangePaneFolderDocuments(oFormPaymentandInvoice);
+
+                                #endregion
+                            }
+                            else if (pVal.FormType == 181 && pVal.ItemUID == "BtnEnvi" && pVal.Before_Action == true)
+                            {
+                                #region Se adiciona boton enviar a la DIAN
+
+                                SAPbouiCOM.Form oFormPaymentandInvoice;
+
+                                oFormPaymentandInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+                                DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, oFormPaymentandInvoice, null, "NotaCreditoDeProveedores", "A", "ItemEvent");
+
+                                #endregion
+                            }
+
+
+                            #endregion
+
+
                             #region Parametros eBiling
 
                             else if (pVal.FormUID == "BO_eBillingP" && pVal.ItemUID == "btnConTk" && pVal.BeforeAction == true)
@@ -1267,7 +1399,7 @@ namespace BasisOne
                                 SAPbouiCOM.Form oFormInvoice;
 
                                 oFormInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
-                                DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, oFormInvoice, null,  "NotaDebitoClientes", "A", "ItemEvent");
+                                DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, oFormInvoice, null, "NotaDebitoClientes", "A", "ItemEvent");
 
                             }
 
@@ -1655,7 +1787,7 @@ namespace BasisOne
                                 SAPbouiCOM.Form oForm;
                                 oForm = sboapp.Forms.Item("UDO_F_BORP3");
 
-                                DllProduction.DeleteRowMatrix(sboapp,oForm,pVal, "0_U_G");
+                                DllProduction.DeleteRowMatrix(sboapp, oForm, pVal, "0_U_G");
 
                                 oForm.Mode = BoFormMode.fm_UPDATE_MODE;
 
@@ -1678,7 +1810,7 @@ namespace BasisOne
                                 {
                                     oForm.Mode = BoFormMode.fm_UPDATE_MODE;
                                 }
-                                                                
+
                                 #endregion
                             }
                             #endregion
@@ -1704,33 +1836,19 @@ namespace BasisOne
                                 }
                             }
 
-                            else if (pVal.FormType == 133 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
+                            if (pVal.FormType == 141 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
                             {
                                 SAPbouiCOM.Form oFormInvoice;
 
                                 oFormInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
 
-                                if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
+                                if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == false)
                                 {
-                                    //if (oFormInvoice.Mode == BoFormMode.fm_OK_MODE)
-                                    //{
-                                    //DlleBilling.ItemsLabelStatusDIAN(oFormInvoice);
-                                    //}
+                                    DlleBilling.AddItemsToDocumets(oFormInvoice, "FacturaDeProveedores");
                                 }
                             }
 
-                            else if (pVal.FormType == 141 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
-                            {
-                                SAPbouiCOM.Form oFormInvoice;
-
-                                oFormInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
-
-                                if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Action_Success == true)
-                                {                                    
-                                    DlleBilling.AddItemsToDocumets(oFormInvoice,"FacturaCompraDocumentoSoporte");                                    
-                                }
-                            }
-                            else if (pVal.FormType == 60090 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                            if (pVal.FormType == 60090 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
                             {
                                 SAPbouiCOM.Form oFormPaymentAndInvoice;
 
@@ -1742,7 +1860,7 @@ namespace BasisOne
                                 }
                             }
 
-                            else if (pVal.FormType == 60091 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                            if (pVal.FormType == 60091 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
                             {
                                 SAPbouiCOM.Form oFormInvoice;
 
@@ -1754,7 +1872,7 @@ namespace BasisOne
                                 }
                             }
 
-                            else if (pVal.FormType == 179 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                            if (pVal.FormType == 179 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
                             {
                                 SAPbouiCOM.Form oCreditNote;
 
@@ -1790,6 +1908,19 @@ namespace BasisOne
                                 }
 
                             }
+                            else if (pVal.FormType == 181 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                            {
+                                SAPbouiCOM.Form oDebitNote;
+
+                                oDebitNote = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+
+                                if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                                {
+                                    DlleBilling.AddItemsToDocumets(oDebitNote, "NotaCreditoProveedores");
+                                }
+
+                            }
+
 
                             #endregion
                         }
@@ -1842,6 +1973,15 @@ namespace BasisOne
                                 DlleBilling.LinkedButtonMatrixFormVDBO(sboapp, _company, oFormVDBO, pVal, "NotaDebitoClientes");
 
                             }
+                            else if (pVal.FormUID == "BOVDEB" && pVal.ColUID == "Col_9" && pVal.ItemUID == "MtxOPCH" && pVal.BeforeAction == true)
+                            {
+                                SAPbouiCOM.Form oFormVDBO = sboapp.Forms.Item("BOVDEB");
+
+                                DlleBilling.LinkedButtonMatrixFormVDBO(sboapp, _company, oFormVDBO, pVal, "FacturaDeProveedores");
+
+                            }
+
+
 
                             #endregion
                         }
@@ -1932,8 +2072,8 @@ namespace BasisOne
 
             Form frm = null;
 
-            switch (pVal.MenuUID) 
-            {                
+            switch (pVal.MenuUID)
+            {
 
                 case "mnuBO_ConfPresup":
 
@@ -2001,7 +2141,7 @@ namespace BasisOne
                         Presupuesto.Core oFormPresupCuenta = new Core(sboapp, _company);
                         oFormPresupCuenta.showForm("BO_PresupCuenta");
                     }
-                    
+
                     #endregion
 
                     break;
@@ -2011,7 +2151,7 @@ namespace BasisOne
                     #region Eventos en el Menu Presupuesto
 
                     if (sboapp.Forms.ActiveForm.TypeEx == "BOPC")
-                    { 
+                    {
                         Console.WriteLine("Click en nuevo");
                         FlagNew = true;
                         oCore.LlenarChkForms(sboapp.Forms.ActiveForm.TypeEx);
@@ -2028,7 +2168,7 @@ namespace BasisOne
                         {
                             frm = sboapp.Forms.ActiveForm;
 
-                            DlleBilling.ItemsLabelStatusDIAN(frm,"MenuEvent");
+                            DlleBilling.ItemsLabelStatusDIAN(frm, "MenuEvent");
                         }
                     }
 
@@ -2060,7 +2200,7 @@ namespace BasisOne
                     }
 
                     #endregion
-                    
+
                     break;
 
                 case "1289":
@@ -2183,7 +2323,7 @@ namespace BasisOne
 
                             DllFunciones.sendErrorMessage(sboapp, e);
                         }
-                       
+
                     }
 
                     #endregion
@@ -2214,7 +2354,7 @@ namespace BasisOne
 
                             DllFunciones.sendErrorMessage(sboapp, e);
                         }
-                
+
                     }
 
                     #endregion
@@ -2227,7 +2367,7 @@ namespace BasisOne
 
                     if (TieneLicenciaeBilling == true)
                     {
-                        
+
                         try
                         {
                             SAPbouiCOM.Form oFormBO_eBillingP = sboapp.Forms.Item("BO_eBillingP");
@@ -2240,7 +2380,7 @@ namespace BasisOne
                             throw;
                         }
 
-                        
+
                     }
 
                     #endregion
@@ -2299,7 +2439,7 @@ namespace BasisOne
 
                     if (TieneLicenciaProduction == true)
                     {
-                       try
+                        try
                         {
                             DllFunciones.StatusBar(sboapp, BoStatusBarMessageType.smt_Warning, "Consultado ordenes de produccion, por favor espere...");
 
@@ -2320,7 +2460,7 @@ namespace BasisOne
                             DllFunciones.sendErrorMessage(sboapp, e);
                         }
 
-                        
+
 
                     }
 
@@ -2333,7 +2473,7 @@ namespace BasisOne
                     #region Carga Formulario Control Ordenes de Produccion
 
                     if (TieneLicenciaProduction == true)
-                    {                       
+                    {
 
                         try
                         {
@@ -2351,7 +2491,7 @@ namespace BasisOne
                         {
 
                             DllFunciones.sendErrorMessage(sboapp, e);
-                        }                    
+                        }
 
                     }
 
@@ -2364,7 +2504,7 @@ namespace BasisOne
                     #region Carga Formulario Control Ordenes de Produccion
 
                     if (TieneLicenciaProduction == true)
-                    {                  
+                    {
 
                         try
                         {
@@ -2389,7 +2529,7 @@ namespace BasisOne
                     #endregion
 
                     break;
-                    
+
             }
 
         }
@@ -2408,7 +2548,7 @@ namespace BasisOne
             if (sboapp.Menus.Exists("AddSM"))
             {
                 sboapp.Menus.RemoveEx("AddSM");
-            } 
+            }
 
             if (sboapp.Menus.Exists("AddOSM"))
             {
@@ -2416,7 +2556,7 @@ namespace BasisOne
             }
 
             #endregion
-            
+
             try
             {
                 SAPbouiCOM.Form oFormActive = sboapp.Forms.ActiveForm;
@@ -2426,7 +2566,7 @@ namespace BasisOne
                     DlleBilling.Right_Click(ref eventInfo, sboapp, "1");
                 }
                 else if (oFormActive.TypeEx == "133" && eventInfo.BeforeAction == true && oFormActive.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
-                { 
+                {
                     DlleBilling.Right_Click(ref eventInfo, sboapp, "2");
                 }
 
@@ -2434,7 +2574,7 @@ namespace BasisOne
                 {
 
                     DllProduction.Right_Click(ref eventInfo, sboapp);
-                    
+
                 }
 
 
@@ -2982,7 +3122,7 @@ namespace BasisOne
                 DllFunciones.liberarObjetos(oValidacion);
             }
 
-            catch (Exception e)
+            catch (Exception)
             {
 
                 throw;
@@ -3463,11 +3603,7 @@ namespace BasisOne
 
                 DllFunciones.sendErrorMessage(sboapp, e);
             }
-
-
-
-
-
+            
         }
 
         #endregion

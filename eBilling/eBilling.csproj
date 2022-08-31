@@ -145,23 +145,23 @@
     <None Include="Service References\ServicioEmisionFE\eBilling.ServicioEmisionFE.SendEmailResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ServicioEmisionFE\Service1.wsdl" />
-    <None Include="Service References\ServicioEmisionFE\Service6.xsd">
+    <None Include="Service References\ServicioEmisionFE\Service.wsdl" />
+    <None Include="Service References\ServicioEmisionFE\Service.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServicioEmisionFE\Service61.xsd">
+    <None Include="Service References\ServicioEmisionFE\Service1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServicioEmisionFE\Service62.xsd">
+    <None Include="Service References\ServicioEmisionFE\Service2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServicioEmisionFE\Service63.xsd">
+    <None Include="Service References\ServicioEmisionFE\Service3.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServicioEmisionFE\Service64.xsd">
+    <None Include="Service References\ServicioEmisionFE\Service4.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServicioEmisionFE\Service65.xsd">
+    <None Include="Service References\ServicioEmisionFE\Service5.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
