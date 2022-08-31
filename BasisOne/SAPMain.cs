@@ -344,7 +344,30 @@ namespace BasisOne
 
                                 #endregion
                             }
+                            else if (pVal.FormUID == "BOVDEB" && pVal.ItemUID == "MtxOPCH" && pVal.Before_Action == true && pVal.Action_Success == false)
+                            {
+                                #region Selecciona la infomracion de la matrix notas debito visor de documentos
 
+                                try
+                                {
+                                    #region Variables
+
+                                    SAPbouiCOM.Form oForm_BOVDEB = sboapp.Forms.Item("BOVDEB");
+                                    SAPbouiCOM.Matrix MtxOINVD = (Matrix)oForm_BOVDEB.Items.Item("MtxOPCH").Specific;
+
+                                    #endregion
+
+                                    DllFunciones.SelectRowMatrix(MtxOINVD, pVal);
+
+                                }
+                                catch (Exception)
+                                {
+
+                                    throw;
+                                }
+
+                                #endregion
+                            }
                             #endregion
 
                             #region Socios de negocio
@@ -381,6 +404,19 @@ namespace BasisOne
 
                             }
                             else if (pVal.FormType == 133 && pVal.ItemUID == "lblURL" && pVal.Before_Action == false && pVal.Action_Success == true && (pVal.FormMode == 1 || pVal.FormMode == 2))
+                            {
+                                #region abre la factura en la DIAN
+
+                                SAPbouiCOM.Form oInvoice;
+
+                                oInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+
+                                DlleBilling.DocumentSearchDIAN(oInvoice);
+
+                                #endregion
+
+                            }
+                            else if (pVal.FormType == 141 && pVal.ItemUID == "lblURL" && pVal.Before_Action == false && pVal.Action_Success == true && (pVal.FormMode == 1 || pVal.FormMode == 2))
                             {
                                 #region abre la factura en la DIAN
 
@@ -1275,6 +1311,35 @@ namespace BasisOne
 
                             #endregion
 
+                            #region Nota Credito Proveedor - Documento Soporte
+
+                            else if (pVal.FormType == 181 && pVal.ItemUID == "FolderBO1" && pVal.Before_Action == true)
+                            {
+                                #region Adiciona pestaña eBilling 
+
+                                SAPbouiCOM.Form oFormPaymentandInvoice;
+
+                                oFormPaymentandInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+                                DlleBilling.ChangePaneFolderDocuments(oFormPaymentandInvoice);
+
+                                #endregion
+                            }
+                            else if (pVal.FormType == 181 && pVal.ItemUID == "BtnEnvi" && pVal.Before_Action == true)
+                            {
+                                #region Se adiciona boton enviar a la DIAN
+
+                                SAPbouiCOM.Form oFormPaymentandInvoice;
+
+                                oFormPaymentandInvoice = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+                                DlleBilling.EnviarDocumentoTFHKA(sboapp, _company, oFormPaymentandInvoice, null, "NotaCreditoDeProveedores", "A", "ItemEvent");
+
+                                #endregion
+                            }
+
+
+                            #endregion
+
+
                             #region Parametros eBiling
 
                             else if (pVal.FormUID == "BO_eBillingP" && pVal.ItemUID == "btnConTk" && pVal.BeforeAction == true)
@@ -1843,6 +1908,19 @@ namespace BasisOne
                                 }
 
                             }
+                            else if (pVal.FormType == 181 && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                            {
+                                SAPbouiCOM.Form oDebitNote;
+
+                                oDebitNote = sboapp.Forms.GetFormByTypeAndCount(pVal.FormType, pVal.FormTypeCount);
+
+                                if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.Before_Action == true)
+                                {
+                                    DlleBilling.AddItemsToDocumets(oDebitNote, "NotaCreditoProveedores");
+                                }
+
+                            }
+
 
                             #endregion
                         }
@@ -1895,6 +1973,15 @@ namespace BasisOne
                                 DlleBilling.LinkedButtonMatrixFormVDBO(sboapp, _company, oFormVDBO, pVal, "NotaDebitoClientes");
 
                             }
+                            else if (pVal.FormUID == "BOVDEB" && pVal.ColUID == "Col_9" && pVal.ItemUID == "MtxOPCH" && pVal.BeforeAction == true)
+                            {
+                                SAPbouiCOM.Form oFormVDBO = sboapp.Forms.Item("BOVDEB");
+
+                                DlleBilling.LinkedButtonMatrixFormVDBO(sboapp, _company, oFormVDBO, pVal, "FacturaDeProveedores");
+
+                            }
+
+
 
                             #endregion
                         }

@@ -237,6 +237,3 @@ C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBas
 C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\bin\x64\BusinessObjects.Enterprise.Sdk.ZipLib.netmodule
 C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\obj\Debug\BOeBilling.dll
 C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\eBilling\obj\Debug\BOeBilling.pdb
-D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\CrystalDecisions.ReportSource.dll
-D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\FlashControlV71.dll
-D:\Github\BasisOne\SAP\AddOnBasisOne\eBilling\bin\x64\ShockwaveFlashObjects.dll

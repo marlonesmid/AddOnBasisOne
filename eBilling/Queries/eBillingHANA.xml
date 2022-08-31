@@ -135,10 +135,10 @@
     CASE WHEN A."U_BO_MRWS" IS NULL THEN 'No Enviado'
     ELSE A."U_BO_MRWS" END AS "Respuesta_TFHKA",
     A."DocEntry" AS "DocEntry"
-    FROM "PRUEBAS_ACTUAL"."OPCH" A LEFT JOIN "PRUEBAS_ACTUAL"."@BOEE" B ON A."DocEntry"=B."U_BO_DocEntry" AND B."U_BO_ObjecType" = '13'
+    FROM "%sNameDB%"."OPCH" A LEFT JOIN "%sNameDB%"."@BOEE" B ON A."DocEntry"=B."U_BO_DocEntry" AND B."U_BO_ObjecType" = '13'
     WHERE "DocDate" BETWEEN '%FI%' AND '%FF%'
     %EstadoDocumento%
-    AND "Series" IN (SELECT "U_BO_SN" FROM "PRUEBAS_ACTUAL"."@BOSERNUM" WHERE "U_BO_TD" = 'DSA')
+    AND "Series" IN (SELECT "U_BO_SN" FROM "%sNameDB%"."@BOSERNUM" WHERE "U_BO_TD" = 'DSA')
     AND "DocSubType"= '--'
     ***SN***
     ***DocNum***
