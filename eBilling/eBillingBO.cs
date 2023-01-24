@@ -2855,6 +2855,7 @@ namespace eBilling
 
             }
 
+
             #endregion
 
             #region Impuestos
@@ -2981,15 +2982,17 @@ namespace eBilling
 
             #region Informcion Adicional
 
-            if (Convert.ToString(oCabecera.Fields.Item("FacturaTieneMuestras").Value.ToString()) == "SI")
+            if (!string.IsNullOrEmpty(Convert.ToString(oCabecera.Fields.Item("Comentarios").Value.ToString())))
             {
                 string[] txtInformacionAdicional = new string[1];
 
-                txtInformacionAdicional[0] = "El total de la Factura a cobrar corresponde a los items registrado sin considerar la muestra gratis";
+                txtInformacionAdicional[0] = Convert.ToString(oCabecera.Fields.Item("Comentarios").Value.ToString());
 
                 FacturadeVenta.informacionAdicional = txtInformacionAdicional;
             }
 
+
+            
             #endregion
 
             return FacturadeVenta;
