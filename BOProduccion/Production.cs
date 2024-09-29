@@ -258,8 +258,12 @@ namespace BOProduccion
         {
 
             SAPbouiCOM.ChooseFromListCollection oCFLs = null;
+#pragma warning disable CS0219 // La variable está asignada pero nunca se usa su valor
             SAPbouiCOM.Conditions oCons = null;
+#pragma warning restore CS0219 // La variable está asignada pero nunca se usa su valor
+#pragma warning disable CS0219 // La variable está asignada pero nunca se usa su valor
             SAPbouiCOM.Condition oCon = null;
+#pragma warning restore CS0219 // La variable está asignada pero nunca se usa su valor
 
             oCFLs = _oFormGL.ChooseFromLists;
 
@@ -3572,7 +3576,9 @@ namespace BOProduccion
             {
 
                 throw;
+#pragma warning disable CS0162 // Se detectó código inaccesible
                 return false;
+#pragma warning restore CS0162 // Se detectó código inaccesible
             }
 
         }
@@ -3747,7 +3753,9 @@ namespace BOProduccion
             {
 
                 throw;
+#pragma warning disable CS0162 // Se detectó código inaccesible
                 return false;
+#pragma warning restore CS0162 // Se detectó código inaccesible
             }
 
         }

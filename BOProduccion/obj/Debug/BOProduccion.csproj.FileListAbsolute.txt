@@ -45,3 +45,13 @@ C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBas
 C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.dll
 C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.pdb
 C:\Users\tecnicosap\Documents\Visual Studio 2015\Projects\AddOnBasisOne\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.csprojResolveAssemblyReference.cache
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\bin\x64\BOProduccion.dll
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\bin\x64\BOProduccion.pdb
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\bin\x64\BOFunciones.dll
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\bin\x64\SAPBusinessOneSDK.dll
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\bin\x64\BOFunciones.pdb
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.csproj.AssemblyReference.cache
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.csproj.CoreCompileInputs.cache
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.csproj.CopyComplete
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.dll
+C:\GitHub\BasisOne\AddOnBasisOne\BOProduccion\obj\Debug\BOProduccion.pdb

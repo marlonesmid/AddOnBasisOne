@@ -106,43 +106,46 @@
     WHERE A."DocDate" BETWEEN '%FI%' AND '%FF%' 
     %EstadoDocumento% 
     AND A."DocSubType"= 'DN' 
-    AND A."Series" = '%Series%' 
+    AND A."Series" IN (%Series%) 
     ***SN*** 
     ***DocNum***
   </GetDebitMemo>
 
   <GetPurchase>
-    SELECT ROW_NUMBER() OVER(ORDER BY A."DocNum" ASC) AS "#",
-    CASE A."U_BO_S" WHEN '0' THEN 'A la espera'
-    WHEN '1' THEN 'Aceptada'
-    WHEN '2' THEN 'Rechaza'
-    WHEN '3' THEN 'En validación'
-    ELSE 'A la espera' END AS "Estado",
-    A."DocNum" AS "No_Factura",
-    A."CardCode" AS "Codigo_cliente",
-    A."CardName" AS "Nombre_cliente",
-    A."DocDate" AS "Fecha_Documento",
-    A."DocDueDate" AS "Fecha_vencimiento",
-    CASE WHEN A."U_BO_EE" = 'Y' THEN 'SI'
-    WHEN A."U_BO_EE" = 'N' THEN 'NO'
-    ELSE '' END  AS "Enviar_Email",
-    CASE WHEN B."U_BO_StatusEmail" = '200' THEN 'Enviado' ELSE 'Pendiente' END AS "Estado_Correo",
-    B."U_BO_Email1" AS "Correo1",
-    B."U_BO_Email2" AS "Correo2",
-    B."U_BO_Email3" AS "Correo3",
-    B."U_BO_Email4" AS "Correo4",
-    B."U_BO_Email5" AS "Correo5",
-    A."DocTotal" AS "Total_documento",
-    CASE WHEN A."U_BO_MRWS" IS NULL THEN 'No Enviado'
-    ELSE A."U_BO_MRWS" END AS "Respuesta_TFHKA",
-    A."DocEntry" AS "DocEntry"
-    FROM "PRUEBAS_ACTUAL"."OPCH" A LEFT JOIN "PRUEBAS_ACTUAL"."@BOEE" B ON A."DocEntry"=B."U_BO_DocEntry" AND B."U_BO_ObjecType" = '13'
-    WHERE "DocDate" BETWEEN '%FI%' AND '%FF%'
-    %EstadoDocumento%
-    AND "Series" IN (SELECT "U_BO_SN" FROM "PRUEBAS_ACTUAL"."@BOSERNUM" WHERE "U_BO_TD" = 'DSA')
-    AND "DocSubType"= '--'
-    ***SN***
-    ***DocNum***
+	  SELECT ROW_NUMBER() OVER(ORDER BY A."DocNum" ASC) AS '#',
+	          CASE A."U_BO_S" WHEN '0' THEN 'A la espera'
+	                          WHEN '1' THEN 'Aceptada'
+	                          WHEN '2' THEN 'Rechaza'
+	                          WHEN '3' THEN 'En validación'
+	                          ELSE 'A la espera'
+	                          END AS 'Estado',
+	          A."DocNum" AS 'No_Factura',
+	          A."CardCode" AS 'Codigo_cliente',
+	          A."CardName" AS 'Nombre_cliente',
+	          A."DocDate" AS 'Fecha_Documento',
+	          A."DocDueDate" AS 'Fecha_vencimiento',
+	          CASE WHEN A."U_BO_EE" = 'Y' THEN 'SI'
+	               WHEN A."U_BO_EE" = 'N' THEN 'NO'
+	               ELSE '' END  AS 'Enviar_Email',
+	          CASE WHEN B.U_BO_StatusEmail = '200' THEN 'Enviado' ELSE 'Pendiente' END AS 'Estado_Correo',
+	          B.U_BO_Email1 AS 'Correo1',
+	          B.U_BO_Email2 AS 'Correo2',
+	          B.U_BO_Email3 AS 'Correo3',
+	          B.U_BO_Email4 AS 'Correo4',
+	          B.U_BO_Email5 AS 'Correo5',
+	          A."DocTotal" AS 'Total_documento',
+	          CASE WHEN A."U_BO_MRWS" IS NULL THEN 'No Enviado'
+	          ELSE A."U_BO_MRWS" END AS "Respuesta_TFHKA",
+	          A."DocEntry" AS 'DocEntry'
+
+	  FROM OPCH A LEFT JOIN "@BOEE" B ON A."DocEntry"=B."U_BO_DocEntry" AND B."U_BO_ObjecType" = '18'
+	  WHERE "DocDate" BETWEEN '%FI%'
+	  AND '%FF%'
+	  %EstadoDocumento%
+	  AND "Series" in (%Series%)
+	  AND "DocSubType"= '--'
+	  ***SN***
+	  ***DocNum***
   </GetPurchase>
 
   <GetSeriesNumberInvoice>
@@ -168,7 +171,7 @@
     FOR XML PATH('')
     ), 1, 1, '') as 'SNFV',
     (SELECT Code FROM [@BOSERNUM] WHERE U_BO_TD = 'NCC') AS 'SNNC',
-    (SELECT Code FROM [@BOSERNUM] WHERE U_BO_TD = 'NDC')  AS 'SNND'
+    (SELECT Code FROM [@BOSERNUM] WHERE U_BO_TD = 'NDC')  AS 'SNND',
     (SELECT Code FROM [@BOSERNUM] WHERE U_BO_TD = 'DSA')  AS 'DSA'
   </GetSeriesNumberActive>
 
